@@ -1,0 +1,2336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: pages/Manager.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: pages/Manager.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import React, { useState, useEffect } from "react";
+import "./Manager.css";
+
+let http_address = "http://127.0.0.1:5000";
+//let http_address = "http://18.227.52.89:5000/";
+
+/**
+ * Manager Component
+ *
+ * This component is responsible for managing stock items in the application.  It allows any user
+ * who is a manager to add and remove items from the menu, edit item details, and view insights on
+ * what items sell best with each other, what needs restocking, what has or has not been selling, and
+ * the company's sales.
+ *
+ * State Variables:
+ * - flavors: An array of flavor objects fetched from the server
+ * - toppings: An array of topping objects fetched from the server
+ * - vessels: An array of vessel objects fetched from the server
+ * - newFlavor: holds values for a possible new flavor
+ * - newTopping: holds values for a possible new topping
+ * - newVessel: holds values for a possible new vessel
+ * - deleteItem: holds the name of the item about to be removed
+ * - selectedItem: the currently selected item in the Items panel of manager
+ * - nameChange: an item's possible new name
+ * - descChange: an item's possible new description
+ * - priceChange: an item's possible new price
+ * - stockChange: an item's possible new quantity
+ * - imgChange: an item's possible new image address
+ * - selectedSection: either items or insights
+ * - selectedItemCategory: either all, flavors, toppings, or vessels
+ * - selectedNewItem: for adding or removing items based on category (either flavors, flavorsGone, toppings, toppingsGone, vessels, or vesselsGone)
+ * - itsAdd: Boolean to toggle if we are adding something to manager
+ * - itsRemove: Boolean to toggle if we are removing something from manager
+ * - restockData: holds the restock report data
+ * - excessData: holds the excess report data
+ * - togetherData: hold the what sells together report data
+ * - salesData: holds the sales report data
+ * - usageData: holds the product usage chart data
+ * - tempStartData: the possible start date input from the user, to be checked for validity
+ * - startDate: the start date used for the time period of all reports except restock
+ * - tempEndData: the possible end date input from the user, to be checked for validity
+ * - endDate: the end date used for the time period of all reports except restock and excess
+ *
+ * @returns {React.Component} The Manager component.
+ */
+
+const Manager = () => {
+  /**
+   * fetches all ice cream flavors and puts them in flavors
+   */
+  const [flavors, setFlavors] = useState([]);
+  useEffect(() => {
+    fetch(http_address + "/icecream_data")
+      .then((res) => res.json())
+      .then((data) => {
+        const allData = data.value;
+        const newArr = allData.map((item) => ({
+          item_id: item.item_id,
+          name: item.name,
+          price: item.price,
+          quantity: item.quantity,
+          min_quantity: item.min_quantity,
+          description: item.description,
+          image: item.image,
+          is_dairy_free: item.is_dairy_free,
+          is_vegan: item.is_vegan,
+          seasonal: item.seasonal,
+        }));
+        setFlavors(newArr);
+      });
+  }, []);
+
+  /**
+   * fetches all vessel items and puts them in vessels
+   */
+  const [vessels, setVessels] = useState([]);
+  useEffect(() => {
+    fetch(http_address + "/vessel_data")
+      .then((res) => res.json())
+      .then((data) => {
+        const allData = data.value;
+        const newArr = allData.map((item) => ({
+          item_id: item.item_id,
+          name: item.name,
+          price: item.price,
+          quantity: item.quantity,
+          description: item.description,
+          image: item.image,
+        }));
+        setVessels(newArr);
+      });
+  }, []);
+
+  /**
+   * fetches all topping items and puts them in toppings
+   */
+  const [toppings, setToppings] = useState([]);
+  useEffect(() => {
+    fetch(http_address + "/topping_data")
+      .then((res) => res.json())
+      .then((data) => {
+        const allData = data.value;
+        const newArr = allData.map((item) => ({
+          item_id: item.item_id,
+          name: item.name,
+          price: item.price,
+          quantity: item.quantity,
+          description: item.description,
+          image: item.image,
+        }));
+        setToppings(newArr);
+      });
+  }, []);
+
+  //new flavor default
+  const [newFlavor, setNewFlavor] = useState({
+    name: "",
+    price: 0.0,
+    quantity: 0,
+    description: "",
+    image: "",
+    is_dairy_free: false,
+    is_vegan: false,
+    min_quantity: 0,
+    seasonal: "none",
+    item_id: 0,
+  });
+
+  //new topping default
+  const [newTopping, setNewTopping] = useState({
+    name: "",
+    description: "",
+    price: "",
+    min_quantity: "",
+    quantity: "",
+    image: "",
+    item_id: 0,
+  });
+
+  //new vessel default
+  const [newVessel, setNewVessel] = useState({
+    name: "",
+    description: "",
+    price: "",
+    min_quantity: "",
+    quantity: "",
+    image: "",
+    item_id: 0,
+  });
+
+  const [deleteItem, setDeleteItem] = useState({
+    name: "",
+  });
+
+  /**
+   * handles the user input of the name of the deleted item
+   */
+  const handleInputChangeDeleteItem = (e) => {
+    setDeleteItem({ ...deleteItem, [e.target.name]: e.target.value });
+  };
+
+  /**
+   * handles the user input of the chosen flavor's attributes
+   */
+  const handleInputChangeFlavor = (event) => {
+    const { name, value } = event.target;
+    setNewFlavor({
+      ...newFlavor,
+      [name]: name === "price" ? parseFloat(value) : value,
+    });
+  };
+
+  /**
+   * handles the user input of the chosen topping's attributes
+   */
+  const handleInputChangeTopping = (event) => {
+    const { name, value } = event.target;
+    setNewTopping({
+      ...newTopping,
+      [name]: name === "price" ? parseFloat(value) : value,
+    });
+  };
+
+  /**
+   * handles the user input of the chosen vessel's attributes
+   */
+  const handleInputChangeVessel = (event) => {
+    const { name, value } = event.target;
+    setNewVessel({
+      ...newVessel,
+      [name]: name === "price" ? parseFloat(value) : value,
+    });
+  };
+
+  /**
+   * adds a new flavor into the database and menu
+   * checks for duplicates and invalid fields
+   */
+  const addNewFlavor = async (event) => {
+    event.preventDefault();
+
+    // Object to store names and values of invalid fields
+    const invalidFields = {};
+
+    // Validation checks
+    if (!newFlavor.name) {
+      invalidFields.name = newFlavor.name;
+    }
+
+    if (newFlavor.price &lt; 0) {
+      invalidFields.price = newFlavor.price;
+    }
+
+    if (newFlavor.quantity &lt; 0) {
+      invalidFields.quantity = newFlavor.quantity;
+    }
+
+    if (!newFlavor.description) {
+      invalidFields.description = newFlavor.description;
+    }
+
+    if (
+      newFlavor.min_quantity &lt; 0 ||
+      newFlavor.min_quantity > newFlavor.quantity
+    ) {
+      invalidFields.min_quantity = newFlavor.min_quantity;
+    }
+
+    // Check for invalid seasonal value
+    if (!newFlavor.seasonal &amp;&amp; newFlavor.seasonal !== "none") {
+      invalidFields.seasonal = newFlavor.seasonal;
+    }
+
+    // Check for duplicate name
+    if (flavors.some((flavor) => flavor.name === newFlavor.name)) {
+      alert("Flavor with the same name already exists.");
+    } else if (Object.keys(invalidFields).length === 0) {
+      try {
+        // Send a request to your server to add the new flavor
+        var maxId = 0;
+        const maxItemIdResponse = await fetch(http_address + "/max_itemid");
+        const maxItemIdData = await maxItemIdResponse.json();
+        if (maxItemIdResponse.ok) {
+          maxId = maxItemIdData.value;
+        }
+
+        const response = await fetch(http_address + "/add_item", {
+          method: "POST", // Use POST method for adding a new flavor
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            description: newFlavor.description,
+            name: newFlavor.name,
+            imgURL: newFlavor.image,
+            price: newFlavor.price,
+            quantity: newFlavor.quantity,
+            min_quantity: newFlavor.min_quantity,
+            item_type: "icecream",
+            is_vegan: newFlavor.is_vegan,
+            is_dairy_free: newFlavor.is_dairy_free,
+            seasonal: newFlavor.seasonal,
+            item_id: maxId + 1,
+          }), // Send the new flavor details in the request body
+        });
+
+        if (response.ok) {
+          // Flavor added successfully to the database
+          console.log("Flavor added successfully");
+          // Continue with updating the state and clearing input fields as before
+          const maxId = Math.max(...flavors.map((flavor) => flavor.item_id));
+          const newFlavorItem = {
+            item_id: maxId + 1,
+            name: newFlavor.name,
+            description: newFlavor.description,
+            price: newFlavor.price,
+            min_quantity: newFlavor.min_quantity,
+            quantity: newFlavor.quantity,
+            image: newFlavor.image || null,
+            is_dairy_free: newFlavor.is_dairy_free || false,
+            is_vegan: newFlavor.is_vegan || false,
+            seasonal: newFlavor.seasonal,
+          };
+
+          setFlavors([...flavors, newFlavorItem]);
+          setNewFlavor({
+            name: "",
+            description: "",
+            price: 0.0,
+            quantity: 0,
+            image: "",
+            is_dairy_free: false,
+            is_vegan: false,
+            min_quantity: 0,
+            seasonal: "none",
+            item_id: 0,
+          });
+        } else {
+          console.error("Failed to add flavor");
+        }
+      } catch (error) {
+        console.error("Error adding flavor:", error);
+      }
+    } else {
+      // Display alert with names and values of invalid fields
+      const invalidFieldsMessage = Object.entries(invalidFields)
+        .map(([fieldName, fieldValue]) => `${fieldName}: ${fieldValue}`)
+        .join("\n");
+
+      alert(
+        `Please fill in valid values for the following fields:\n${invalidFieldsMessage}`
+      );
+    }
+  };
+
+  /**
+   * deletes a flavor from the database and menu
+   * takes in a name of a flavor
+   */
+  const deleteFlavor = async (e, flavor) => {
+    e.preventDefault();
+    const isConfirmed = window.confirm(
+      `Are you sure you want to delete ${deleteItem.name}?`
+    );
+
+    if (!isConfirmed) {
+      // User clicked "Cancel" or closed the dialog
+      console.log("Deletion canceled.");
+      return;
+    }
+    try {
+      // Send a request to delete the flavor
+      const response = await fetch(http_address + "/delete_item", {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: flavor.name,
+          item_type: "icecream",
+        }),
+      });
+
+      if (response.ok) {
+        // Flavor deleted successfully
+        console.log("Flavor deleted successfully");
+        updateFlavorsPostRemove();
+      } else {
+        // Handle the case where deletion was not successful
+        console.error("Failed to delete flavor");
+      }
+    } catch (error) {
+      console.error("Error deleting flavor:", error);
+    }
+  };
+
+  /**
+   * adds a new topping into the database and menu
+   * checks for duplicates and invalid fields
+   */
+  const addNewTopping = async (event) => {
+    event.preventDefault();
+
+    // Object to store names and values of invalid fields
+    const invalidFields = {};
+
+    // Validation checks
+    if (!newTopping.name) {
+      invalidFields.name = newTopping.name;
+    }
+
+    if (newTopping.price &lt; 0) {
+      invalidFields.price = newTopping.price;
+    }
+
+    if (newTopping.quantity &lt; 0) {
+      invalidFields.quantity = newTopping.quantity;
+    }
+
+    if (!newTopping.description) {
+      invalidFields.description = newTopping.description;
+    }
+
+    if (
+      newTopping.min_quantity &lt; 0 ||
+      newTopping.min_quantity > newTopping.quantity
+    ) {
+      invalidFields.min_quantity = newTopping.min_quantity;
+    }
+
+    // Check for duplicate name
+    if (toppings.some((topping) => topping.name === newTopping.name)) {
+      alert("Topping with the same name already exists.");
+    } else if (Object.keys(invalidFields).length === 0) {
+      try {
+        // Send a request to your server to add the new flavor
+        var maxId = 0;
+        const maxItemIdResponse = await fetch(http_address + "/max_itemid");
+        const maxItemIdData = await maxItemIdResponse.json();
+        if (maxItemIdResponse.ok) {
+          maxId = maxItemIdData.value;
+        }
+
+        const response = await fetch(http_address + "/add_item", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            description: newTopping.description,
+            name: newTopping.name,
+            imgURL: newTopping.image,
+            price: newTopping.price,
+            quantity: newTopping.quantity,
+            min_quantity: newTopping.min_quantity,
+            item_type: "topping",
+            item_id: maxId + 1,
+          }), // Send the new topping details in the request body
+        });
+
+        if (response.ok) {
+          // Topping added successfully to the database
+          console.log("Topping added successfully");
+          // Continue with updating the state and clearing input fields as before
+
+          const newToppingItem = {
+            name: newTopping.name,
+            description: newTopping.description,
+            price: newTopping.price,
+            min_quantity: newTopping.min_quantity,
+            quantity: newTopping.quantity,
+            image: newTopping.image || null,
+            item_id: maxId + 1,
+          };
+
+          setToppings([...toppings, newToppingItem]);
+          setNewTopping({
+            name: "",
+            description: "",
+            price: 0.0,
+            quantity: 0,
+            image: "",
+            min_quantity: 0,
+            item_id: 0,
+          });
+        } else {
+          console.error("Failed to add topping");
+        }
+      } catch (error) {
+        console.error("Error adding topping:", error);
+      }
+    } else {
+      // Display alert with names and values of invalid fields
+      const invalidFieldsMessage = Object.entries(invalidFields)
+        .map(([fieldName, fieldValue]) => `${fieldName}: ${fieldValue}`)
+        .join("\n");
+
+      alert(
+        `Please fill in valid values for the following fields:\n${invalidFieldsMessage}`
+      );
+    }
+  };
+
+  /**
+   * deletes a topping from the database and menu
+   * takes in a name of a topping
+   */
+  const deleteTopping = async (e, topping) => {
+    e.preventDefault();
+    const isConfirmed = window.confirm(
+      `Are you sure you want to delete ${deleteItem.name}?`
+    );
+
+    if (!isConfirmed) {
+      // User clicked "Cancel" or closed the dialog
+      console.log("Deletion canceled.");
+      return;
+    }
+    try {
+      // Send a request to delete the topping
+      const response = await fetch(http_address + "/delete_item", {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: topping.name,
+          item_type: "topping",
+        }),
+      });
+
+      if (response.ok) {
+        // Flavor deleted successfully
+        console.log("Topping deleted successfully");
+        updateToppingsPostRemove();
+      } else {
+        // Handle the case where deletion was not successful
+        console.error("Failed to delete topping");
+      }
+    } catch (error) {
+      console.error("Error deleting topping:", error);
+    }
+  };
+
+  /**
+   * adds a new vessel into the database and menu
+   * checks for duplicates and invalid fields
+   */
+  const addNewVessel = async (event) => {
+    event.preventDefault();
+
+    // Object to store names and values of invalid fields
+    const invalidFields = {};
+
+    // Validation checks
+    if (!newVessel.name) {
+      invalidFields.name = newVessel.name;
+    }
+
+    if (newVessel.price &lt; 0) {
+      invalidFields.price = newVessel.price;
+    }
+
+    if (newVessel.quantity &lt; 0) {
+      invalidFields.quantity = newVessel.quantity;
+    }
+
+    if (!newVessel.description) {
+      invalidFields.description = newVessel.description;
+    }
+
+    if (
+      newVessel.min_quantity &lt; 0 ||
+      newVessel.min_quantity > newVessel.quantity
+    ) {
+      invalidFields.min_quantity = newVessel.min_quantity;
+    }
+
+    // Check for duplicate name
+    if (vessels.some((vessel) => vessel.name === newVessel.name)) {
+      alert("Vessel with the same name already exists.");
+    } else if (Object.keys(invalidFields).length === 0) {
+      try {
+        // Send a request to your server to add the new flavor
+        var maxId = 0;
+        const maxItemIdResponse = await fetch(http_address + "/max_itemid");
+        const maxItemIdData = await maxItemIdResponse.json();
+        if (maxItemIdResponse.ok) {
+          maxId = maxItemIdData.value;
+        }
+        const response = await fetch(http_address + "/add_item", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            description: newVessel.description,
+            name: newVessel.name,
+            imgURL: newVessel.image,
+            price: newVessel.price,
+            quantity: newVessel.quantity,
+            min_quantity: newVessel.min_quantity,
+            item_type: "vessel",
+            item_id: maxId + 1,
+          }), // Send the new topping details in the request body
+        });
+
+        if (response.ok) {
+          // Topping added successfully to the database
+          console.log("Vessel added successfully");
+          // Continue with updating the state and clearing input fields as before
+
+          const newVesselItem = {
+            name: newVessel.name,
+            description: newVessel.description,
+            price: newVessel.price,
+            min_quantity: newVessel.min_quantity,
+            quantity: newVessel.quantity,
+            image: newVessel.image || null,
+            item_id: maxId + 1,
+          };
+
+          setVessels([...vessels, newVesselItem]);
+          setNewVessel({
+            name: "",
+            description: "",
+            price: 0.0,
+            quantity: 0,
+            image: "",
+            min_quantity: 0,
+            item_id: 0,
+          });
+        } else {
+          console.error("Failed to add vessel");
+        }
+      } catch (error) {
+        console.error("Error adding vessel:", error);
+      }
+    } else {
+      // Display alert with names and values of invalid fields
+      const invalidFieldsMessage = Object.entries(invalidFields)
+        .map(([fieldName, fieldValue]) => `${fieldName}: ${fieldValue}`)
+        .join("\n");
+
+      alert(
+        `Please fill in valid values for the following fields:\n${invalidFieldsMessage}`
+      );
+    }
+  };
+
+  /**
+   * deletes a vessel from the database and menu
+   * takes in a name of a vessel
+   */
+  const deleteVessel = async (e, vessel) => {
+    e.preventDefault();
+    const isConfirmed = window.confirm(
+      `Are you sure you want to delete ${deleteItem.name}?`
+    );
+
+    if (!isConfirmed) {
+      // User clicked "Cancel" or closed the dialog
+      console.log("Deletion canceled.");
+      return;
+    }
+    try {
+      // Send a request to delete the vessel
+      const response = await fetch(http_address + "/delete_item", {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: vessel.name,
+          item_type: "vessel",
+        }),
+      });
+
+      if (response.ok) {
+        // Flavor deleted successfully
+        console.log("Vessel deleted successfully");
+        updateVesselsPostRemove();
+      } else {
+        // Handle the case where deletion was not successful
+        console.error("Failed to delete vessel");
+      }
+    } catch (error) {
+      console.error("Error deleting vessel:", error);
+    }
+  };
+
+  const [selectedItem, setSelectedItem] = useState(null); //selects any item
+  const [nameChange, setNameChange] = useState(null); //initial changed name
+  const [descChange, setDescChange] = useState(null); //initial changed description
+  const [stockChange, setStockChange] = useState(0); //initial changed stock
+  const [priceChange, setPriceChange] = useState(0); //initial changed price
+  const [imgChange, setImgChange] = useState(null); //initial changed image URL
+
+  const [selectedSection, setSelectedSection] = useState("items"); // 'items' or 'insights'
+  const [selectedItemCategory, setSelectedItemCategory] = useState("all"); // 'all', 'flavors', 'toppings', 'vessels'
+  const [selectedNewItem, setSelectedNewItem] = useState(null); // 'flavors', 'toppings', 'vessels', or their respective gones
+  const [itsAdd, setitsAdd] = useState(false); // 'flavors', 'toppings', 'vessels', or their respective gones
+  const [itsRemove, setitsRemove] = useState(false); // 'flavors', 'toppings', 'vessels', or their respective gones
+
+  /**
+   * displays information about the currently selected item
+   * if item = "", it displays nothing
+   */
+  const display = (item) => {
+    if (item) {
+      setSelectedItem({
+        name: item.name,
+        price: item.price,
+        quantity: item.quantity,
+        image: item.image,
+        item_id: item.item_id,
+        description: item.description,
+        is_vegan: item.is_vegan,
+        is_dairy_free: item.is_dairy_free,
+      });
+    } else {
+      setSelectedItem(null);
+      setitsAdd(false);
+      setitsRemove(false);
+      setNewFlavor({
+        name: "",
+        description: "",
+        price: 0.0,
+        quantity: 0,
+        image: "",
+        is_dairy_free: false,
+        is_vegan: false,
+        min_quantity: 0,
+        seasonal: "none",
+        item_id: 0,
+      });
+      setNewTopping({
+        name: "",
+        price: 0.0,
+        quantity: 0,
+        min_quantity: 0,
+        description: "",
+        image: "",
+        item_id: 0,
+      });
+      setNewVessel({
+        name: "",
+        price: 0.0,
+        quantity: 0,
+        min_quantity: 0,
+        description: "",
+        image: "",
+        item_id: 0,
+      });
+    }
+  };
+
+  /**
+   * displays the selected category for filling out new items
+   * either flavors, toppings, or vessels
+   */
+  const displayCat = (category) => {
+    if (category) {
+      setSelectedNewItem(category);
+    } else {
+      selectedNewItem(null);
+    }
+  };
+
+  /**
+   * updates the name of a selected item, making sure it is not already
+   * in the menu
+   */
+  const updateName = () => {
+    if (nameChange !== null) {
+      setSelectedItem((prevSelectedItem) => {
+        if (
+          vessels.some((vessel) => vessel.name === nameChange) ||
+          toppings.some((topping) => topping.name === nameChange) ||
+          flavors.some((flavor) => flavor.name === nameChange)
+        ) {
+          alert("Item with the same name already exists.");
+        } else {
+          return {
+            ...prevSelectedItem,
+            name: nameChange,
+          };
+        }
+      });
+    } else {
+      alert("Name cannot be null.");
+    }
+  };
+
+  /**
+   * updates the description of a selected item
+   */
+  const updateDesc = () => {
+    setSelectedItem((prevSelectedItem) => {
+      return {
+        ...prevSelectedItem,
+        description: descChange,
+      };
+    });
+  };
+
+  /**
+   * updates the quantity or stock of a selected item
+   */
+  const updateStock = () => {
+    setSelectedItem((prevSelectedItem) => {
+      return {
+        ...prevSelectedItem,
+        quantity: stockChange,
+      };
+    });
+  };
+
+  /**
+   * updates the price of a selected item
+   */
+  const updatePrice = () => {
+    setSelectedItem((prevSelectedItem) => {
+      return {
+        ...prevSelectedItem,
+        price: priceChange,
+      };
+    });
+  };
+
+  /**
+   * updates the image address of a selected item
+   */
+  const updateImg = () => {
+    setSelectedItem((prevSelectedItem) => {
+      return {
+        ...prevSelectedItem,
+        image: imgChange,
+      };
+    });
+  };
+
+  /**
+   * updates flavors by remapping them when an item is added
+   */
+  const updateFlavors = (updatedFlavor) => {
+    setFlavors((flavors) => {
+      const updatedFlavors = flavors.map((flavor) =>
+        flavor.item_id === updatedFlavor.item_id ? updatedFlavor : flavor
+      );
+      return updatedFlavors;
+    });
+  };
+
+  /**
+   * updates flavors by remapping them when an item is removed
+   */
+  const updateFlavorsPostRemove = () => {
+    setFlavors((flavors) => {
+      const updatedFlavors = flavors.filter(
+        (flavor) => flavor.name !== deleteItem.name
+      );
+      return updatedFlavors;
+    });
+  };
+
+  /**
+   * updates toppings by remapping them when an item is added
+   */
+  const updateToppings = (updatedTopping) => {
+    setToppings((toppings) => {
+      const updatedToppings = toppings.map((topping) =>
+        topping.item_id === updatedTopping.item_id ? updatedTopping : topping
+      );
+      return updatedToppings;
+    });
+  };
+
+  /**
+   * updates toppings by remapping them when an item is removed
+   */
+  const updateToppingsPostRemove = () => {
+    setToppings((toppings) => {
+      const updatedToppings = toppings.filter(
+        (topping) => topping.name !== deleteItem.name
+      );
+      return updatedToppings;
+    });
+  };
+
+  /**
+   * updates vessels by remapping them when an item is added
+   */
+  const updateVessels = (updatedVessel) => {
+    setVessels((vessels) => {
+      const updatedVessels = vessels.map((vessel) =>
+        vessel.item_id === updatedVessel.item_id ? updatedVessel : vessel
+      );
+      return updatedVessels;
+    });
+  };
+
+  /**
+   * updates vessels by remapping them when an item is removed
+   */
+  const updateVesselsPostRemove = () => {
+    setVessels((vessels) => {
+      const updatedVessels = vessels.filter(
+        (vessel) => vessel.name !== deleteItem.name
+      );
+      return updatedVessels;
+    });
+  };
+
+  //INSIGHTS
+  const [restockData, setRestockData] = useState([]);
+  const [excessData, setExcessData] = useState([]);
+  const [togetherData, setTogetherData] = useState([]);
+  const [salesData, setSalesData] = useState([]);
+  const [usageData, setUsageData] = useState([]);
+  const [selectedInsightCategory, setSelectedInsightCategory] = useState([]);
+
+  /**
+   * fetches data for the restock report and adds it to restockData
+   */
+  useEffect(() => {
+    fetch(http_address + "/restock_report")
+      .then((res) => res.json())
+      .then((data) => {
+        const allData = data.value;
+        setRestockData(allData);
+      });
+  }, []);
+
+  //Dates
+  const [tempStartDate, setTempStartDate] = useState("");
+  const [tempEndDate, setTempEndDate] = useState("");
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
+
+  /**
+   * handles user input for the start data and puts it in tempStartDate
+   */
+  const handleStartDateChange = (event) => {
+    const enteredDate = event.target.value;
+
+    setTempStartDate(enteredDate);
+  };
+
+  /**
+   * handles user input for the end data and puts it in tempEndDate
+   */
+  const handleEndDateChange = (event) => {
+    const enteredDate = event.target.value;
+
+    setTempEndDate(enteredDate);
+  };
+
+  /**
+   * handles the submit button for start date, checking if the format is correct
+   */
+  const handleStartSubmit = () => {
+    if (isValidDate(tempStartDate)) {
+      console.log("Start Date:", startDate);
+      setStartDate(tempStartDate);
+    } else {
+      alert("Invalid start date format. Please use the YYYY-MM-DD format.");
+      setTempStartDate("");
+    }
+  };
+
+  /**
+   * handles the submit button for end date, checking if the format is correct
+   */
+  const handleEndSubmit = () => {
+    if (isValidDate(tempEndDate)) {
+      console.log("End Date:", endDate);
+      setEndDate(tempEndDate);
+    } else {
+      alert("Invalid end date format. Please use the YYYY-MM-DD format.");
+      setTempEndDate("");
+    }
+  };
+
+  /**
+   * checks if the date is a real date and in YYY-MM-DD format
+   */
+  const isValidDate = (dateString) => {
+    if (dateString === null || dateString === "") {
+      return false;
+    }
+
+    const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
+
+    if (!dateRegex.test(dateString)) {
+      return false;
+    }
+
+    const [year, month, day] = dateString.split("-").map(Number);
+
+    // Validate year
+    if (year &lt; 1) {
+      return false;
+    }
+
+    // Validate month
+    if (month &lt; 1 || month > 12) {
+      return false;
+    }
+
+    // Validate day based on the month
+    const daysInMonth = new Date(year, month, 0).getDate();
+    if (day &lt; 1 || day > daysInMonth) {
+      return false;
+    }
+
+    return true;
+  };
+
+  /**
+   * fetches data for the excess report and adds it to excessData
+   */
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch(
+          `${http_address}/excess_report?startdate=${startDate}`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+
+        const data = await response.json();
+        const allData = data.value;
+        console.log(allData);
+        setExcessData(allData);
+      } catch (error) {
+        console.error("Error fetching excess report:", error);
+      }
+    };
+
+    fetchData();
+  }, [startDate]);
+
+  /**
+   * fetches data for the what sells report and adds it to togetherData
+   */
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        if (startDate &amp;&amp; endDate) {
+          const response = await fetch(
+            `${http_address}/what_sells_report?startdate=${startDate}&amp;enddate=${endDate}`,
+            {
+              method: "GET",
+              headers: {
+                "Content-Type": "application/json",
+              },
+            }
+          );
+
+          if (!response.ok) {
+            throw new Error("Network response was not ok");
+          }
+
+          const data = await response.json();
+          const allData = data.value;
+          console.log(allData);
+          // Update your state or do something with the data
+          setTogetherData(allData);
+        } else {
+          // Handle the case where either startDate or endDate is missing
+          console.error("Please provide both start and end dates.");
+        }
+      } catch (error) {
+        console.error("Error fetching what sells report:", error);
+      }
+    };
+
+    fetchData();
+  }, [startDate, endDate]);
+
+  /**
+   * fetches data for the sales report and adds it to salesData
+   */
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        if (startDate &amp;&amp; endDate) {
+          const response = await fetch(
+            `${http_address}/sales_report?startdate=${startDate}&amp;enddate=${endDate}`,
+            {
+              method: "GET",
+              headers: {
+                "Content-Type": "application/json",
+              },
+            }
+          );
+
+          if (!response.ok) {
+            throw new Error("Network response was not ok");
+          }
+
+          const data = await response.json();
+          const allData = data.value;
+          console.log(allData);
+          setSalesData(allData);
+        } else {
+          // Handle the case where either startDate or endDate is missing
+          console.error("Please provide both start and end dates.");
+        }
+      } catch (error) {
+        console.error("Error fetching sales report:", error);
+      }
+    };
+
+    fetchData();
+  }, [startDate, endDate]);
+
+  /**
+   * fetches data for the product usage chart and adds it to usageData
+   */
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        if (startDate &amp;&amp; endDate) {
+          const response = await fetch(
+            `${http_address}/usage_report?startdate=${startDate}&amp;enddate=${endDate}`,
+            {
+              method: "GET",
+              headers: {
+                "Content-Type": "application/json",
+              },
+            }
+          );
+
+          if (!response.ok) {
+            throw new Error("Network response was not ok");
+          }
+
+          const data = await response.json();
+          const allData = data.value;
+          console.log(allData);
+          setUsageData(allData);
+        } else {
+          // Handle the case where either startDate or endDate is missing
+          console.error("Please provide both start and end dates.");
+        }
+      } catch (error) {
+        console.error("Error fetching sales report:", error);
+      }
+    };
+
+    fetchData();
+  }, [startDate, endDate]);
+
+  //html attributes
+  return (
+    &lt;>
+      &lt;div>
+        &lt;h1>Welcome to the Manager Page!&lt;/h1>
+      &lt;/div>
+      &lt;div className="managernav">
+        &lt;button
+          className={selectedItemCategory === "all" ? "selected" : ""}
+          onClick={() => {
+            setSelectedSection("items");
+            setSelectedItemCategory("all");
+            display();
+          }}
+        >
+          All Items
+        &lt;/button>
+        &lt;button
+          className={selectedItemCategory === "flavors" ? "selected" : ""}
+          onClick={() => {
+            setSelectedSection("items");
+            setSelectedItemCategory("flavors");
+            display();
+          }}
+        >
+          Flavors
+        &lt;/button>
+
+        &lt;button
+          className={selectedItemCategory === "toppings" ? "selected" : ""}
+          onClick={() => {
+            setSelectedSection("items");
+            setSelectedItemCategory("toppings");
+            display();
+          }}
+        >
+          Toppings
+        &lt;/button>
+        &lt;button
+          className={selectedItemCategory === "vessels" ? "selected" : ""}
+          onClick={() => {
+            setSelectedSection("items");
+            setSelectedItemCategory("vessels");
+            display();
+          }}
+        >
+          Vessels
+        &lt;/button>
+
+        &lt;button
+          className={selectedItemCategory === "insights" ? "selected" : ""}
+          onClick={() => {
+            setSelectedSection("insights");
+            setSelectedItemCategory("insights");
+            display();
+          }}
+        >
+          Insights
+        &lt;/button>
+      &lt;/div>
+      &lt;div className="manager">
+        {selectedSection === "items" &amp;&amp; (
+          &lt;div className="menu">
+            {(selectedItemCategory === "flavors" ||
+              selectedItemCategory === "all") &amp;&amp; (
+              &lt;div className="categoryFood">
+                {/* Fooooood */}
+                &lt;h2>Flavors&lt;/h2>
+                &lt;div className="itemsManager">
+                  {flavors.map((flavor) => (
+                    &lt;div className="itemManager" key={flavor.item_id}>
+                      &lt;strong className="truncate">{flavor.name}&lt;/strong>
+                      &lt;button
+                        onClick={() => {
+                          display(flavor);
+                        }}
+                      >
+                        Change Item
+                      &lt;/button>
+                    &lt;/div>
+                  ))}
+                  &lt;div className="item addItemButton">
+                    &lt;button
+                      onClick={() => {
+                        displayCat("flavors");
+                        display();
+                        setitsAdd(true);
+                      }}
+                    >
+                      Add Ice Cream
+                    &lt;/button>
+                  &lt;/div>
+                  &lt;div className="item addItemButton">
+                    &lt;button
+                      onClick={() => {
+                        displayCat("flavorsGone");
+                        display();
+                        setitsRemove(true);
+                      }}
+                    >
+                      Remove Ice Cream
+                    &lt;/button>
+                  &lt;/div>
+                &lt;/div>
+              &lt;/div>
+            )}
+            {/* Toppings */}
+            {(selectedItemCategory === "toppings" ||
+              selectedItemCategory === "all") &amp;&amp; (
+              &lt;div className="categoryTopping">
+                &lt;h2>Toppings&lt;/h2>
+                &lt;div className="itemsManager">
+                  {toppings.map((topping) => (
+                    &lt;div className="itemManager" key={topping.item_id}>
+                      &lt;strong className="truncate">{topping.name}&lt;/strong>
+                      &lt;button onClick={() => display(topping)}>
+                        Change Item
+                      &lt;/button>
+                    &lt;/div>
+                  ))}
+                  &lt;div className="item addItemButton">
+                    &lt;button
+                      onClick={() => {
+                        displayCat("toppings");
+                        display();
+                        setitsAdd(true);
+                      }}
+                    >
+                      Add Topping
+                    &lt;/button>
+                  &lt;/div>
+                  &lt;div className="item addItemButton">
+                    &lt;button
+                      onClick={() => {
+                        displayCat("toppingGone");
+                        display();
+                        setitsRemove(true);
+                      }}
+                    >
+                      Remove Topping
+                    &lt;/button>
+                  &lt;/div>
+                &lt;/div>
+              &lt;/div>
+            )}
+            {/* Vessels */}
+            {(selectedItemCategory === "vessels" ||
+              selectedItemCategory === "all") &amp;&amp; (
+              &lt;div className="categoryVessels">
+                &lt;h2>Vessels&lt;/h2>
+                &lt;div className="itemsManager">
+                  {vessels.map((vessel) => (
+                    &lt;div className="itemManager" key={vessel.item_id}>
+                      &lt;strong>{vessel.name}&lt;/strong>
+                      &lt;button onClick={() => display(vessel)}>
+                        Change Item
+                      &lt;/button>
+                    &lt;/div>
+                  ))}
+                  {/* why is my formatter like this :( */}
+                  &lt;div className="item addItemButton">
+                    &lt;button
+                      onClick={() => {
+                        displayCat("vessels");
+                        display();
+                        setitsAdd(true);
+                      }}
+                    >
+                      Add Vessel
+                    &lt;/button>
+                  &lt;/div>
+                  &lt;div className="item addItemButton">
+                    &lt;button
+                      onClick={() => {
+                        displayCat("vesselGone");
+                        display();
+                        setitsRemove(true);
+                      }}
+                    >
+                      Remove Vessel
+                    &lt;/button>
+                  &lt;/div>
+                &lt;/div>
+              &lt;/div>
+            )}
+          &lt;/div>
+        )}
+
+        &lt;div className="selected-item">
+          {/* displays the selected item */}
+          {selectedItem &amp;&amp; selectedSection === "items" &amp;&amp; (
+            &lt;div>
+              &lt;h1>
+                {selectedItem.is_vegan === true
+                  ? `${selectedItem.name} (V)`
+                  : selectedItem.name}
+              &lt;/h1>
+              &lt;p id="desc">{selectedItem.description}&lt;/p>
+              &lt;img src={selectedItem.image} alt={selectedItem.name}>&lt;/img>
+              &lt;p>
+                &lt;strong>Price:&lt;/strong> $
+                {typeof selectedItem.price === "number"
+                  ? selectedItem.price.toFixed(2)
+                  : "N/A"}
+              &lt;/p>
+              &lt;p>
+                &lt;strong>Stock:&lt;/strong> {selectedItem.quantity}
+              &lt;/p>
+              &lt;br>&lt;/br>
+              &lt;div>
+                &lt;label>
+                  Change Name:
+                  &lt;input
+                    type="text"
+                    value={nameChange}
+                    required
+                    onChange={(e) => setNameChange(e.target.value)}
+                  />
+                &lt;/label>
+                &lt;button
+                  type="submit"
+                  value="Add Name"
+                  onClick={async () => {
+                    const todo = { nameChange };
+                    try {
+                      const response = await fetch(
+                        http_address + "/update_item",
+                        {
+                          method: "PUT",
+                          headers: {
+                            "Content-Type": "application/json",
+                          },
+
+                          body: JSON.stringify({
+                            item_id: selectedItem.item_id,
+                            field: "name",
+                            value: nameChange,
+                          }),
+                        }
+                      );
+                      console.log(selectedItem);
+                      console.log(nameChange);
+                      setNameChange("");
+                      if (response.ok) {
+                        console.log("Todo added successfully");
+
+                        const updatedItem = {
+                          ...selectedItem,
+                          name: nameChange,
+                        };
+                        updateName();
+                        updateFlavors(updatedItem);
+                        updateToppings(updatedItem);
+                        updateVessels(updatedItem);
+                      } else {
+                        console.error("Failed to add todo");
+                      }
+                    } catch (error) {
+                      console.error("Error adding todo:", error);
+                    }
+                  }}
+                >
+                  Add Name
+                &lt;/button>
+              &lt;/div>
+              &lt;div>
+                &lt;label>
+                  Change Description:
+                  &lt;input
+                    type="text"
+                    value={descChange}
+                    required
+                    onChange={(e) => setDescChange(e.target.value)}
+                  />
+                &lt;/label>
+                &lt;button
+                  type="submit"
+                  value="Apply Desc"
+                  onClick={async () => {
+                    const todo = { descChange };
+                    try {
+                      const response = await fetch(
+                        http_address + "/update_item",
+                        {
+                          method: "PUT",
+                          headers: {
+                            "Content-Type": "application/json",
+                          },
+
+                          body: JSON.stringify({
+                            item_id: selectedItem.item_id,
+                            field: "description",
+                            value: descChange,
+                          }),
+                        }
+                      );
+                      console.log(selectedItem);
+                      console.log(descChange);
+                      setDescChange("");
+                      if (response.ok) {
+                        console.log("Todo added successfully");
+                        const updatedItem = {
+                          ...selectedItem,
+                          description: descChange,
+                        };
+                        updateDesc();
+                        updateFlavors(updatedItem);
+                        updateToppings(updatedItem);
+                        updateVessels(updatedItem);
+                      } else {
+                        console.error("Failed to add todo");
+                      }
+                    } catch (error) {
+                      console.error("Error adding todo:", error);
+                    }
+                  }}
+                >
+                  Apply Desc
+                &lt;/button>
+              &lt;/div>
+              &lt;div>
+                &lt;label>
+                  Change Stock:
+                  &lt;input
+                    type="number"
+                    value={stockChange}
+                    required
+                    min="0"
+                    onChange={(e) => setStockChange(parseFloat(e.target.value))}
+                  />
+                &lt;/label>
+                &lt;button
+                  type="submit"
+                  value="Apply Stock"
+                  onClick={async () => {
+                    const todo = { stockChange };
+                    try {
+                      const response = await fetch(
+                        http_address + "/update_item",
+                        {
+                          method: "PUT",
+                          headers: {
+                            "Content-Type": "application/json",
+                          },
+
+                          body: JSON.stringify({
+                            item_id: selectedItem.item_id,
+                            field: "quantity",
+                            value: stockChange,
+                          }),
+                        }
+                      );
+                      console.log(selectedItem);
+                      console.log(stockChange);
+                      setStockChange(0);
+                      if (response.ok) {
+                        console.log("Todo added successfully");
+                        const updatedItem = {
+                          ...selectedItem,
+                          quantity: stockChange,
+                        };
+                        updateStock();
+                        updateFlavors(updatedItem);
+                        updateToppings(updatedItem);
+                        updateVessels(updatedItem);
+                      } else {
+                        console.error("Failed to add todo");
+                      }
+                    } catch (error) {
+                      console.error("Error adding todo:", error);
+                    }
+                  }}
+                >
+                  Apply Stock
+                &lt;/button>
+              &lt;/div>
+              &lt;div>
+                &lt;label>
+                  Change Price:
+                  &lt;input
+                    type="number"
+                    value={priceChange}
+                    required
+                    min="0"
+                    step="0.01"
+                    onChange={(e) => setPriceChange(parseFloat(e.target.value))}
+                  />
+                &lt;/label>
+                &lt;button
+                  className="applyButton"
+                  type="submit"
+                  value="Apply Price"
+                  onClick={async () => {
+                    const todo = { priceChange };
+                    try {
+                      const response = await fetch(
+                        http_address + "/update_item",
+                        {
+                          method: "PUT",
+                          headers: {
+                            "Content-Type": "application/json",
+                          },
+
+                          body: JSON.stringify({
+                            item_id: selectedItem.item_id,
+                            field: "price",
+                            value: priceChange,
+                          }),
+                        }
+                      );
+                      console.log(selectedItem);
+                      console.log(priceChange);
+                      setPriceChange(0);
+                      if (response.ok) {
+                        console.log("Todo added successfully");
+                        const updatedItem = {
+                          ...selectedItem,
+                          price: priceChange,
+                        };
+                        updatePrice();
+                        updateFlavors(updatedItem);
+                        updateToppings(updatedItem);
+                        updateVessels(updatedItem);
+                      } else {
+                        console.error("Failed to add todo");
+                      }
+                    } catch (error) {
+                      console.error("Error adding todo:", error);
+                    }
+                  }}
+                >
+                  Apply Price
+                &lt;/button>
+              &lt;/div>
+              &lt;div>
+                &lt;label>
+                  Change Image URL:
+                  &lt;input
+                    type="text"
+                    value={imgChange}
+                    onChange={(e) => setImgChange(e.target.value)}
+                  />
+                &lt;/label>
+                &lt;button
+                  type="submit"
+                  value="Apply Image"
+                  onClick={async () => {
+                    const todo = { imgChange };
+                    try {
+                      const response = await fetch(
+                        http_address + "/update_item",
+                        {
+                          method: "PUT",
+                          headers: {
+                            "Content-Type": "application/json",
+                          },
+
+                          body: JSON.stringify({
+                            item_id: selectedItem.item_id,
+                            field: "imgURL",
+                            value: imgChange,
+                          }),
+                        }
+                      );
+                      console.log(selectedItem);
+                      console.log(imgChange);
+                      setImgChange("");
+
+                      if (response.ok) {
+                        console.log("Todo added successfully");
+                        const updatedItem = {
+                          ...selectedItem,
+                          image: imgChange,
+                        };
+                        updateImg();
+                        updateFlavors(updatedItem);
+                        updateToppings(updatedItem);
+                        updateVessels(updatedItem);
+                      } else {
+                        console.error("Failed to add todo");
+                      }
+                    } catch (error) {
+                      console.error("Error adding todo:", error);
+                    }
+                  }}
+                >
+                  Apply Image
+                &lt;/button>
+              &lt;/div>
+            &lt;/div>
+          )}
+          {/* adding a new flavor */}
+          {!selectedItem &amp;&amp;
+            selectedSection === "items" &amp;&amp;
+            selectedNewItem === "flavors" &amp;&amp;
+            itsAdd === true &amp;&amp; (
+              &lt;div>
+                &lt;h1>Add A New Flavor&lt;/h1>
+                &lt;p className="centeredText">
+                  All are required unless otherwise stated
+                &lt;/p>
+                &lt;br />
+                &lt;form onSubmit={addNewFlavor}>
+                  &lt;label htmlFor="name">Name:&lt;/label>
+                  &lt;br />
+                  &lt;input
+                    type="text"
+                    name="name"
+                    required
+                    value={newFlavor.name}
+                    onChange={handleInputChangeFlavor}
+                  />
+                  &lt;br />
+                  &lt;br />
+                  &lt;label htmlFor="description">Description:&lt;/label>
+                  &lt;br />
+                  &lt;input
+                    type="text"
+                    name="description"
+                    value={newFlavor.description}
+                    onChange={handleInputChangeFlavor}
+                    required
+                  />
+                  &lt;br />
+                  &lt;br />
+                  &lt;label htmlFor="price">Price:&lt;/label>
+                  &lt;br />
+                  &lt;input
+                    type="number"
+                    name="price"
+                    value={newFlavor.price}
+                    onChange={handleInputChangeFlavor}
+                    required
+                    min="0"
+                    step="0.01"
+                  />
+                  &lt;br />
+                  &lt;br />
+                  &lt;label htmlFor="min_quantity">Min Stock:&lt;/label>
+                  &lt;br />
+                  &lt;input
+                    type="number"
+                    name="min_quantity"
+                    value={newFlavor.min_quantity}
+                    onChange={handleInputChangeFlavor}
+                    required
+                    min="0"
+                    step="1"
+                  />
+                  &lt;br />
+                  &lt;br />
+                  &lt;label htmlFor="quantity">Stock:&lt;/label>
+                  &lt;br />
+                  &lt;input
+                    type="number"
+                    name="quantity"
+                    value={newFlavor.quantity}
+                    onChange={handleInputChangeFlavor}
+                    required
+                    min="0"
+                    step="1"
+                  />
+                  &lt;br />
+                  &lt;br />
+                  &lt;label>
+                    Is Dairy Free:
+                    &lt;input
+                      type="checkbox"
+                      name="is_dairy_free"
+                      checked={newFlavor.is_dairy_free}
+                      onChange={() =>
+                        setNewFlavor({
+                          ...newFlavor,
+                          is_dairy_free: !newFlavor.is_dairy_free,
+                        })
+                      }
+                    />
+                  &lt;/label>
+                  &lt;br />
+                  &lt;br />
+                  &lt;label>
+                    Is Vegan:
+                    &lt;input
+                      type="checkbox"
+                      name="is_vegan"
+                      checked={newFlavor.is_vegan}
+                      onChange={() =>
+                        setNewFlavor({
+                          ...newFlavor,
+                          is_vegan: !newFlavor.is_vegan,
+                        })
+                      }
+                    />
+                  &lt;/label>
+                  &lt;br />
+                  &lt;br />
+                  &lt;label htmlFor="seasonal">Seasonal:&lt;/label>
+                  &lt;br />
+                  &lt;select
+                    name="seasonal"
+                    value={newFlavor.seasonal || "none"}
+                    onChange={handleInputChangeFlavor}
+                  >
+                    &lt;option value="none">None&lt;/option>
+                    &lt;option value="spring">Spring&lt;/option>
+                    &lt;option value="summer">Summer&lt;/option>
+                    &lt;option value="fall">Fall&lt;/option>
+                    &lt;option value="winter">Winter&lt;/option>
+                  &lt;/select>
+                  &lt;br />
+                  &lt;br />
+                  &lt;label htmlFor="image">Image URL (optional):&lt;/label>
+                  &lt;br />
+                  &lt;input
+                    type="text"
+                    name="image"
+                    value={newFlavor.image}
+                    onChange={handleInputChangeFlavor}
+                  />
+                  &lt;br />
+                  &lt;br />
+                  &lt;div>
+                    &lt;button type="submit">Submit&lt;/button>
+                  &lt;/div>
+                &lt;/form>
+              &lt;/div>
+            )}
+          {/* removing flavor */}
+          {!selectedItem &amp;&amp;
+            selectedSection === "items" &amp;&amp;
+            selectedNewItem === "flavorsGone" &amp;&amp;
+            itsRemove === true &amp;&amp; (
+              &lt;div>
+                &lt;h1>Remove A Flavor&lt;/h1>
+                &lt;p className="centeredText">
+                  Insert the name of the flavor you want to delete
+                &lt;/p>
+                &lt;form onSubmit={(e) => deleteFlavor(e, deleteItem)}>
+                  &lt;label htmlFor="name">Name:&lt;/label>
+                  &lt;br />
+                  &lt;input
+                    type="text"
+                    name="name"
+                    required
+                    value={deleteItem.name}
+                    onChange={handleInputChangeDeleteItem}
+                  />
+                  &lt;div>
+                    &lt;button type="submit">Submit&lt;/button>
+                  &lt;/div>
+                &lt;/form>
+              &lt;/div>
+            )}
+          {/* adding a new topping */}
+          {!selectedItem &amp;&amp;
+            selectedSection === "items" &amp;&amp;
+            selectedNewItem === "toppings" &amp;&amp;
+            itsAdd === true &amp;&amp; (
+              &lt;div>
+                &lt;h1>Add A New Topping&lt;/h1>
+                &lt;p className="centeredText">
+                  All are required unless otherwise stated
+                &lt;/p>
+                &lt;br />
+                &lt;form onSubmit={addNewTopping}>
+                  &lt;label htmlFor="name">Name:&lt;/label>
+                  &lt;br />
+                  &lt;input
+                    type="text"
+                    name="name"
+                    required
+                    value={newTopping.name}
+                    onChange={handleInputChangeTopping}
+                  />
+                  &lt;br />
+                  &lt;br />
+                  &lt;label htmlFor="description">Description:&lt;/label>
+                  &lt;br />
+                  &lt;input
+                    type="text"
+                    name="description"
+                    value={newTopping.description}
+                    onChange={handleInputChangeTopping}
+                    required
+                  />
+                  &lt;br />
+                  &lt;br />
+                  &lt;label htmlFor="price">Price:&lt;/label>
+                  &lt;br />
+                  &lt;input
+                    type="number"
+                    name="price"
+                    value={newTopping.price}
+                    onChange={handleInputChangeTopping}
+                    required
+                    min="0"
+                    step="0.01"
+                  />
+                  &lt;br />
+                  &lt;br />
+                  &lt;label htmlFor="min_quantity">Min Quantity:&lt;/label>
+                  &lt;br />
+                  &lt;input
+                    type="number"
+                    name="min_quantity"
+                    value={newTopping.min_quantity}
+                    onChange={handleInputChangeTopping}
+                    required
+                    min="0"
+                    step="1"
+                  />
+                  &lt;br />
+                  &lt;br />
+                  &lt;label htmlFor="quantity">Quantity:&lt;/label>
+                  &lt;br />
+                  &lt;input
+                    type="number"
+                    name="quantity"
+                    value={newTopping.quantity}
+                    onChange={handleInputChangeTopping}
+                    required
+                    min="0"
+                    step="1"
+                  />
+                  &lt;br />
+                  &lt;br />
+                  &lt;label htmlFor="image">Image URL (optional):&lt;/label>
+                  &lt;br />
+                  &lt;input
+                    type="text"
+                    name="image"
+                    value={newTopping.image}
+                    onChange={handleInputChangeTopping}
+                  />
+                  &lt;br />
+                  &lt;br />
+                  &lt;div>
+                    &lt;button type="submit">Submit&lt;/button>
+                  &lt;/div>
+                &lt;/form>
+              &lt;/div>
+            )}
+          {/* removing topping */}
+          {!selectedItem &amp;&amp;
+            selectedSection === "items" &amp;&amp;
+            selectedNewItem === "toppingGone" &amp;&amp;
+            itsRemove === true &amp;&amp; (
+              &lt;div>
+                &lt;h1>Remove A Topping&lt;/h1>
+                &lt;p className="centeredText">
+                  Insert the name of the topping you want to delete
+                &lt;/p>
+                &lt;form onSubmit={(e) => deleteTopping(e, deleteItem)}>
+                  &lt;label htmlFor="name">Name:&lt;/label>
+                  &lt;br />
+                  &lt;input
+                    type="text"
+                    name="name"
+                    required
+                    value={deleteItem.name}
+                    onChange={handleInputChangeDeleteItem}
+                  />
+                  &lt;div>
+                    &lt;button type="submit">Submit&lt;/button>
+                  &lt;/div>
+                &lt;/form>
+              &lt;/div>
+            )}
+          {/* adding a new vessel */}
+          {!selectedItem &amp;&amp;
+            selectedSection === "items" &amp;&amp;
+            selectedNewItem === "vessels" &amp;&amp;
+            itsAdd === true &amp;&amp; (
+              &lt;div>
+                &lt;h1>Add A New Vessel&lt;/h1>
+                &lt;p className="centeredText">
+                  All are required unless otherwise stated
+                &lt;/p>
+                &lt;br />
+                &lt;form onSubmit={addNewVessel}>
+                  &lt;label htmlFor="name">Name:&lt;/label>
+                  &lt;br />
+                  &lt;input
+                    type="text"
+                    name="name"
+                    required
+                    value={newVessel.name}
+                    onChange={handleInputChangeVessel}
+                  />
+                  &lt;br />
+                  &lt;br />
+                  &lt;label htmlFor="description">Description:&lt;/label>
+                  &lt;br />
+                  &lt;input
+                    type="text"
+                    name="description"
+                    value={newVessel.description}
+                    onChange={handleInputChangeVessel}
+                    required
+                  />
+                  &lt;br />
+                  &lt;br />
+                  &lt;label htmlFor="price">Price:&lt;/label>
+                  &lt;br />
+                  &lt;input
+                    type="number"
+                    name="price"
+                    value={newVessel.price}
+                    onChange={handleInputChangeVessel}
+                    required
+                    min="0"
+                    step="0.01"
+                  />
+                  &lt;br />
+                  &lt;br />
+                  &lt;label htmlFor="min_quantity">Min Quantity:&lt;/label>
+                  &lt;br />
+                  &lt;input
+                    type="number"
+                    name="min_quantity"
+                    value={newVessel.min_quantity}
+                    onChange={handleInputChangeVessel}
+                    required
+                    min="0"
+                    step="1"
+                  />
+                  &lt;br />
+                  &lt;br />
+                  &lt;label htmlFor="quantity">Quantity:&lt;/label>
+                  &lt;br />
+                  &lt;input
+                    type="number"
+                    name="quantity"
+                    value={newVessel.quantity}
+                    onChange={handleInputChangeVessel}
+                    required
+                    min="0"
+                    step="1"
+                  />
+                  &lt;br />
+                  &lt;br />
+                  &lt;label htmlFor="image">Image URL (optional):&lt;/label>
+                  &lt;br />
+                  &lt;input
+                    type="text"
+                    name="image"
+                    value={newVessel.image}
+                    onChange={handleInputChangeVessel}
+                  />
+                  &lt;br />
+                  &lt;br />
+                  &lt;div>
+                    &lt;button type="submit">Submit&lt;/button>
+                  &lt;/div>
+                &lt;/form>
+              &lt;/div>
+            )}
+          {/* removing vessel */}
+          {!selectedItem &amp;&amp;
+            selectedSection === "items" &amp;&amp;
+            selectedNewItem === "vesselGone" &amp;&amp;
+            itsRemove === true &amp;&amp; (
+              &lt;div>
+                &lt;h1>Remove A Vessel&lt;/h1>
+                &lt;p className="centeredText">
+                  Insert the name of the vessel you want to delete
+                &lt;/p>
+                &lt;form onSubmit={(e) => deleteVessel(e, deleteItem)}>
+                  &lt;label htmlFor="name">Name:&lt;/label>
+                  &lt;br />
+                  &lt;input
+                    type="text"
+                    name="name"
+                    required
+                    value={deleteItem.name}
+                    onChange={handleInputChangeDeleteItem}
+                  />
+                  &lt;div>
+                    &lt;button type="submit">Submit&lt;/button>
+                  &lt;/div>
+                &lt;/form>
+              &lt;/div>
+            )}
+        &lt;/div>
+      &lt;/div>
+      {/* insights section*/}
+      {selectedSection === "insights" ? (
+        &lt;div className="insights">
+          &lt;div className="dates">
+            &lt;div className="date-row">
+              &lt;label htmlFor="start-date">Start Date:&lt;/label>
+              &lt;input
+                type="text"
+                id="start-date"
+                placeholder="YYYY-MM-DD"
+                value={tempStartDate}
+                onChange={handleStartDateChange}
+              />
+              &lt;button onClick={handleStartSubmit}>Submit&lt;/button>
+            &lt;/div>
+            &lt;div className="date-row">
+              &lt;label htmlFor="end-date">End Date:&lt;/label>
+              &lt;input
+                type="text"
+                id="end-date"
+                placeholder="YYYY-MM-DD"
+                value={tempEndDate}
+                onChange={handleEndDateChange}
+              />
+              &lt;button onClick={handleEndSubmit}>Submit&lt;/button>
+            &lt;/div>
+          &lt;/div>
+
+          &lt;div className="buttons">
+            &lt;button
+              className={
+                selectedInsightCategory === "productUsage" ? "selected2" : ""
+              }
+              onClick={() => {
+                setSelectedSection("insights");
+                setSelectedInsightCategory("productUsage");
+              }}
+            >
+              Product Usage Chart
+            &lt;/button>
+            &lt;button
+              className={
+                selectedInsightCategory === "excess" ? "selected2" : ""
+              }
+              onClick={() => {
+                setSelectedSection("insights");
+                setSelectedInsightCategory("excess");
+              }}
+            >
+              Excess Report
+            &lt;/button>
+            &lt;button
+              className={
+                selectedInsightCategory === "restock" ? "selected2" : ""
+              }
+              onClick={() => {
+                setSelectedSection("insights");
+                setSelectedInsightCategory("restock");
+              }}
+            >
+              Restock Report
+            &lt;/button>
+            &lt;button
+              className={selectedInsightCategory === "sales" ? "selected2" : ""}
+              onClick={() => {
+                setSelectedSection("insights");
+                setSelectedInsightCategory("sales");
+              }}
+            >
+              Sales Report
+            &lt;/button>
+            &lt;button
+              className={
+                selectedInsightCategory === "together" ? "selected2" : ""
+              }
+              onClick={() => {
+                setSelectedSection("insights");
+                setSelectedInsightCategory("together");
+              }}
+            >
+              What Sells Together
+            &lt;/button>
+          &lt;/div>
+
+          {selectedInsightCategory === "restock" &amp;&amp; (
+            &lt;>
+              {restockData.length > 0 ? (
+                &lt;div className="restock-report">
+                  &lt;h2>Items That Need Restocking&lt;/h2>
+                  &lt;table>
+                    &lt;thead>
+                      &lt;tr>
+                        &lt;th>Item ID&lt;/th>
+                        &lt;th>Name&lt;/th>
+                        &lt;th>Quantity / Min Quantity&lt;/th>
+                      &lt;/tr>
+                    &lt;/thead>
+                    &lt;tbody>
+                      {restockData.map((item, index) => (
+                        &lt;tr key={index}>
+                          &lt;td>{item[0]}&lt;/td>
+                          &lt;td>{item[1]}&lt;/td>
+                          &lt;td>
+                            {item[2]} / {item[3]}
+                          &lt;/td>
+                        &lt;/tr>
+                      ))}
+                    &lt;/tbody>
+                  &lt;/table>
+                &lt;/div>
+              ) : (
+                &lt;p>No items need restocking at the moment.&lt;/p>
+              )}
+            &lt;/>
+          )}
+
+          {selectedInsightCategory === "excess" &amp;&amp; (
+            &lt;>
+              {startDate ? (
+                &lt;>
+                  {excessData.length > 0 ? (
+                    &lt;div className="excess-report">
+                      &lt;h2>Items Sold Least Often ({startDate})&lt;/h2>
+                      &lt;table>
+                        &lt;thead>
+                          &lt;tr>
+                            &lt;th>Item&lt;/th>
+                          &lt;/tr>
+                        &lt;/thead>
+                        &lt;tbody>
+                          {excessData.map((item, index) => (
+                            &lt;tr key={index}>
+                              &lt;td>{item}&lt;/td>
+                            &lt;/tr>
+                          ))}
+                        &lt;/tbody>
+                      &lt;/table>
+                    &lt;/div>
+                  ) : (
+                    &lt;p>No items in excess at the moment.&lt;/p>
+                  )}
+                &lt;/>
+              ) : (
+                &lt;p>
+                  Please select a valid start date to view the excess report.
+                &lt;/p>
+              )}
+            &lt;/>
+          )}
+
+          {selectedInsightCategory === "together" &amp;&amp; (
+            &lt;>
+              {startDate &amp;&amp; endDate ? (
+                &lt;>
+                  {togetherData.length > 0 ? (
+                    &lt;div className="together-report">
+                      &lt;h2>
+                        Most Popular Item Combos between {startDate} and{" "}
+                        {endDate}
+                      &lt;/h2>
+                      &lt;table>
+                        &lt;thead>
+                          &lt;tr>
+                            &lt;th>Names&lt;/th>
+                            &lt;th>Quantity&lt;/th>
+                          &lt;/tr>
+                        &lt;/thead>
+                        &lt;tbody>
+                          {togetherData.map((item, index) => (
+                            &lt;tr key={index}>
+                              &lt;td>
+                                {item[0]} + {item[1]}
+                              &lt;/td>
+                              &lt;td>{item[2]}&lt;/td>
+                            &lt;/tr>
+                          ))}
+                        &lt;/tbody>
+                      &lt;/table>
+                    &lt;/div>
+                  ) : (
+                    &lt;p>No items together at the moment.&lt;/p>
+                  )}
+                &lt;/>
+              ) : (
+                &lt;p>
+                  Please select both start and end dates to view the together
+                  report.
+                &lt;/p>
+              )}
+            &lt;/>
+          )}
+
+          {selectedInsightCategory === "productUsage" &amp;&amp; (
+            &lt;>
+              {startDate &amp;&amp; endDate ? (
+                &lt;>
+                  {Object.entries(usageData).length > 0 ? (
+                    &lt;div className="usage-report">
+                      &lt;h2>
+                        Amount Sold between {startDate} and {endDate}
+                      &lt;/h2>
+                      &lt;table>
+                        &lt;thead>
+                          &lt;tr>
+                            &lt;th>Name&lt;/th>
+                            &lt;th>Value&lt;/th>
+                          &lt;/tr>
+                        &lt;/thead>
+                        &lt;tbody>
+                          {Object.entries(usageData).map((item, index) => (
+                            &lt;tr key={index}>
+                              &lt;td>{item[0]}&lt;/td>
+                              &lt;td>{item[1]}&lt;/td>
+                            &lt;/tr>
+                          ))}
+                        &lt;/tbody>
+                      &lt;/table>
+                    &lt;/div>
+                  ) : (
+                    &lt;p>No items used at the moment.&lt;/p>
+                  )}
+                &lt;/>
+              ) : (
+                &lt;p>
+                  Please select both start and end dates to view the together
+                  report.
+                &lt;/p>
+              )}
+            &lt;/>
+          )}
+          {selectedInsightCategory === "sales" &amp;&amp; (
+            &lt;>
+              {startDate &amp;&amp; endDate ? (
+                &lt;>
+                  {salesData.length > 0 ? (
+                    &lt;div className="sales-report">
+                      &lt;h2>
+                        Sales between {startDate} and {endDate}
+                      &lt;/h2>
+                      &lt;table>
+                        &lt;thead>
+                          &lt;tr>
+                            &lt;th>Name&lt;/th>
+                            &lt;th>Total Quantity Sold&lt;/th>
+                            &lt;th>Total Sales Amount&lt;/th>
+                          &lt;/tr>
+                        &lt;/thead>
+                        &lt;tbody>
+                          {salesData.map((item, index) => (
+                            &lt;tr key={index}>
+                              &lt;td>{item[0]}&lt;/td>
+                              &lt;td>{item[1]}&lt;/td>
+                              &lt;td>{item[2]}&lt;/td>
+                            &lt;/tr>
+                          ))}
+                        &lt;/tbody>
+                      &lt;/table>
+                    &lt;/div>
+                  ) : (
+                    &lt;p>No sales data available for the selected date range.&lt;/p>
+                  )}
+                &lt;/>
+              ) : (
+                &lt;p>
+                  Please select both start and end dates to view the sales
+                  report.
+                &lt;/p>
+              )}
+            &lt;/>
+          )}
+        &lt;/div>
+      ) : null}
+    &lt;/>
+  );
+};
+
+export default Manager;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#Admin">Admin</a></li><li><a href="global.html#App">App</a></li><li><a href="global.html#Cashier">Cashier</a></li><li><a href="global.html#CategoryButton">CategoryButton</a></li><li><a href="global.html#Customer">Customer</a></li><li><a href="global.html#Home">Home</a></li><li><a href="global.html#IceCreamList">IceCreamList</a></li><li><a href="global.html#Manager">Manager</a></li><li><a href="global.html#Menu">Menu</a></li><li><a href="global.html#Navbar">Navbar</a></li><li><a href="global.html#PastOrders">PastOrders</a></li><li><a href="global.html#SignIn">SignIn</a></li><li><a href="global.html#addInfoPrompt">addInfoPrompt</a></li><li><a href="global.html#addToggleTraceTypesOnClick">addToggleTraceTypesOnClick</a></li><li><a href="global.html#firebaseConfig">firebaseConfig</a></li><li><a href="global.html#openShell">openShell</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Wed Dec 06 2023 16:21:41 GMT-0600 (Central Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

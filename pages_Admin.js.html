@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: pages/Admin.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: pages/Admin.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import React, { useState, useEffect } from 'react';
+import "./Admin.css";
+
+import { auth } from './firebaseConfig';
+import { onAuthStateChanged } from "firebase/auth";
+import SignIn from "./SignIn.js"
+import { signOut } from "firebase/auth";
+import { createUserWithEmailAndPassword } from "firebase/auth";
+
+
+let http_address = "http://127.0.0.1:5000";
+
+/**
+ * Admin Component
+ * 
+ * This component is responsible for managing users in the application. It allows
+ * an admin to create new users, view a list of users, and delete users. It also
+ * handles user authentication state changes.
+ * 
+ * State Variables:
+ * - user: The current authenticated user.
+ * - users: An array of user objects fetched from the server.
+ * - uid: The unique identifier for the authenticated user.
+ * - email, password, name, role: Form fields for creating a new user.
+ * - showForm: Boolean to toggle visibility of the new user form.
+ * - showUsers: Boolean to toggle visibility of the user list.
+ * 
+ * @returns {React.Component} The Admin component.
+ */
+const Admin = () => {
+
+    const [user, setUser] = useState(null);
+    const [users, setUsers] = useState([]);
+    const [uid, setUid] = useState(null);
+    const [ids, setIds] = useState(0);
+
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [name, setName] = useState('');
+    const [role, setRole] = useState('');
+
+    /**
+     * Toggles the visibility of the new user form.
+     */
+    const [showForm, setShowForm] = useState(false);
+    const toggleFormVisibility = () => {
+        setShowForm(!showForm);
+    };
+
+    /**
+     * Toggles the visibility of the user list.
+     */
+    const [showUsers, setShowUsers] = useState(false);
+    const toggleUserVisibility = () => {
+        setShowUsers(!showUsers);
+    };
+
+    useEffect(() => {
+        const unsubscribe = onAuthStateChanged(auth, (user) => {
+        if (user) {
+            // User is signed in
+            setUser(user);
+        } else {
+            // User is signed out
+            setUser(null);
+        }
+        });
+        // Cleanup subscription on unmount
+        return () => unsubscribe();
+    }, []);
+    
+    /**
+     * Handles the sign-out action.
+     */
+    const handleSignOut = () => {
+        signOut(auth).then(() => {
+        // Sign-out successful.
+        }).catch((error) => {
+        // An error happened.
+        });
+    };
+
+    useEffect(() => {
+        auth.onAuthStateChanged(user => {
+            if (user) {
+                // User is signed in, you can get the UID
+                setUid(user.uid);
+            } else {
+                // No user is signed in
+                setUid(null);
+            }
+        });
+    }, []);
+
+    /**
+     * Creates a new user with the specified form data.
+     */
+    const createUser = async () => {
+        try {
+            const userData = { 
+                email: email,
+                password: password,
+                name: name,
+                role: role,
+            };
+            const response = await fetch(`${http_address}/add_user`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ 
+                    password: password,
+                    name: name,
+                    email: email,
+                    role: role,
+                }),
+            });
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            const data = await response.json();
+            console.log('User created:', data);
+            // Handle success (e.g., update state, show message)
+        } catch (error) {
+            console.error('Error creating user:', error);
+            // Handle error (e.g., show error message)
+        }
+    };
+    
+    useEffect(() => {
+        fetch(http_address + '/user_data').then(res => res.json()).then(data => {
+            // Assuming 'data.value' is an array of user objects
+            // If 'data.value' is not an array, you should handle that case appropriately
+            const all_data = data.value || []; // Fallback to an empty array if data.value is null/undefined
+            let arr = all_data.map(user => ({
+                id: user.id,
+                name: user.name,
+                email: user.email,
+                role: user.role,
+            }));
+            setUsers(arr);
+        });
+    }, []);
+
+    /**
+     * Renders the list of users.
+     * 
+     * @returns {React.Component} A list of user components.
+     */
+    const renderUsers = () => {
+        return users.map((user, index) => (
+            &lt;div key={index}>
+                &lt;p>Name: {user.name}&lt;/p>
+                &lt;p>Email: {user.email}&lt;/p>
+                &lt;p>Role: {user.role}&lt;/p>
+                &lt;button onClick={() => deleteUser(user.email)}>Delete User&lt;/button>
+            &lt;/div>
+        ));
+    };
+
+    /**
+     * Deletes a user with the specified email.
+     * 
+     * @param {string} email - The email of the user to delete.
+     */
+    const deleteUser = async (email) => {
+        try {
+            const response = await fetch(`${http_address}/delete_user`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ email: email }),
+            });
+
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+
+            console.log('User deleted:', email);
+            // Optionally, refresh the users list or handle UI changes
+        } catch (error) {
+            console.error('Error deleting user:', error);
+        }
+    };
+
+    return (
+        &lt;div className="admin">
+            &lt;h1>Admin - Create User&lt;/h1>
+            &lt;button onClick={toggleFormVisibility}>
+                    {showForm ? "Cancel" : "Add a New User"}
+            &lt;/button>
+            
+            {showForm &amp;&amp; (
+                &lt;form onSubmit={createUser}>
+                    &lt;div>
+                        &lt;label>Email:&lt;/label>
+                        &lt;input
+                            type="email"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            required
+                        />
+                    &lt;/div>
+                    &lt;div>
+                        &lt;label>Password:&lt;/label>
+                        &lt;input
+                            type="password"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            required
+                        />
+                    &lt;/div>
+                    &lt;div>
+                        &lt;label>Name:&lt;/label>
+                        &lt;input
+                            type="text"
+                            value={name}
+                            onChange={(e) => setName(e.target.value)}
+                            required
+                        />
+                    &lt;/div>
+                    &lt;div>
+                        &lt;label>Role:&lt;/label>
+                        &lt;select value={role} onChange={(e) => setRole(e.target.value)} required>
+                            &lt;option value="">Select a role&lt;/option>
+                            &lt;option value="admin">Admin&lt;/option>
+                            &lt;option value="user">User&lt;/option>
+                            {/* Add other roles as needed */}
+                        &lt;/select>
+                    &lt;/div>
+                    &lt;button onClick={createUser} type="submit">Create User&lt;/button>
+                &lt;/form>
+            )}
+
+            {/* Button to toggle users list */}
+            &lt;button onClick={toggleUserVisibility}>
+                {showUsers ? "Hide Users" : "View Users"}
+            &lt;/button>
+
+            {/* Display users if showUsers is true */}
+            {showUsers &amp;&amp; (
+                &lt;div>
+                    &lt;h2>User List&lt;/h2>
+                    {renderUsers()}
+                &lt;/div>
+            )}
+        &lt;/div>
+    )
+};
+
+export default Admin;</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#Admin">Admin</a></li><li><a href="global.html#App">App</a></li><li><a href="global.html#Cashier">Cashier</a></li><li><a href="global.html#CategoryButton">CategoryButton</a></li><li><a href="global.html#Customer">Customer</a></li><li><a href="global.html#Home">Home</a></li><li><a href="global.html#IceCreamList">IceCreamList</a></li><li><a href="global.html#Manager">Manager</a></li><li><a href="global.html#Menu">Menu</a></li><li><a href="global.html#Navbar">Navbar</a></li><li><a href="global.html#PastOrders">PastOrders</a></li><li><a href="global.html#SignIn">SignIn</a></li><li><a href="global.html#addInfoPrompt">addInfoPrompt</a></li><li><a href="global.html#addToggleTraceTypesOnClick">addToggleTraceTypesOnClick</a></li><li><a href="global.html#firebaseConfig">firebaseConfig</a></li><li><a href="global.html#openShell">openShell</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Wed Dec 06 2023 16:21:41 GMT-0600 (Central Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

@@ -1,0 +1,2493 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Global</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Global</h1>
+
+    
+
+
+
+
+<section>
+
+<header>
+    
+        <h2></h2>
+        
+    
+</header>
+
+<article>
+    <div class="container-overview">
+    
+        
+
+        
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+        
+    
+    </div>
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h3 class="subsection-title">Members</h3>
+
+        
+            
+<h4 class="name" id="firebaseConfig"><span class="type-signature">(constant) </span>firebaseConfig<span class="type-signature"></span></h4>
+
+
+
+
+<div class="description">
+    Firebase Configuration
+
+The configuration object for Firebase. It includes keys and identifiers specific to
+the Firebase project. This configuration is required to initialize the Firebase services.
+
+Configuration Details:
+- apiKey: A unique identifier for the Firebase project.
+- authDomain: The domain for Firebase authentication.
+- projectId: The unique ID for the Firebase project.
+- storageBucket: The URL of the Firebase project's storage bucket.
+- messagingSenderId: The sender ID for Firebase Cloud Messaging.
+- appId: The app ID for the Firebase project.
+- measurementId: The measurement ID for Google Analytics (optional).
+</div>
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="pages_firebaseConfig.js.html">pages/firebaseConfig.js</a>, <a href="pages_firebaseConfig.js.html#line26">line 26</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+    
+
+    
+        <h3 class="subsection-title">Methods</h3>
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="Admin"><span class="type-signature"></span>Admin<span class="signature">()</span><span class="type-signature"> &rarr; {React.Component}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Admin Component
+
+This component is responsible for managing users in the application. It allows
+an admin to create new users, view a list of users, and delete users. It also
+handles user authentication state changes.
+
+State Variables:
+- user: The current authenticated user.
+- users: An array of user objects fetched from the server.
+- uid: The unique identifier for the authenticated user.
+- email, password, name, role: Form fields for creating a new user.
+- showForm: Boolean to toggle visibility of the new user form.
+- showUsers: Boolean to toggle visibility of the user list.
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="pages_Admin.js.html">pages/Admin.js</a>, <a href="pages_Admin.js.html#line30">line 30</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    The Admin component.
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">React.Component</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="App"><span class="type-signature"></span>App<span class="signature">()</span><span class="type-signature"> &rarr; {React.Component}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    App Component
+
+The main component of the application. It sets up the router and defines the routes
+for different pages in the application. It also includes the Navbar component that
+appears on all pages.
+
+Routes:
+- "/" : Home page
+- "/admin" : Admin page
+- "/manager" : Manager page
+- "/cashier" : Cashier page
+- "/customer" : Customer page
+- "/menu" : Menu page
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="App.js.html">App.js</a>, <a href="App.js.html#line28">line 28</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    The App component with routing setup.
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">React.Component</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="Cashier"><span class="type-signature"></span>Cashier<span class="signature">(props)</span><span class="type-signature"> &rarr; {React.Component}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Cashier Component
+
+This component serves as the cashier interface for handling customer orders.
+It includes functionality for selecting ice cream items, managing the order, and completing transactions.
+
+State:
+- total: Total cost of the current order.
+- selectedItemType: Type of ice cream item selected (e.g., "Ice Cream").
+- selectedVessel: Currently selected ice cream vessel.
+- selectedSize: Currently selected ice cream size.
+- selectedFlavors: Array of currently selected ice cream flavors.
+- orderedItems: Array representing the current order items.
+- selectedToppings: Array of currently selected toppings.
+- flavorsSelectedForSize: Boolean indicating if the required flavors for the size are selected.
+- orderInProgress: Boolean indicating if an order is in progress.
+- newItemDisabled: Boolean indicating if adding a new item is disabled.
+- maxFlavors: Maximum number of flavors allowed for the selected size.
+- completedItems: Array representing completed items in the order.
+- selectedPrice: Price of the currently selected item.
+- currentItemTotal: Total cost of the current item being configured.
+- itemsToRemove: Array of items to be removed from the completed items.
+- editingIndex: Index of the item being edited in the completed items.
+- editedItem: The item being edited.
+- editModalOpen: Boolean indicating if the edit modal is open.
+- currentView: Current view in the cashier interface ('Cashier' or 'PastOrders').
+- confirmationMessage: Message displayed upon order completion.
+- showConfirmation: Boolean to show/hide the order confirmation message.
+
+Props:
+- user: User object representing the authenticated user.
+
+Functions:
+- pastOrdersPage: Switches the view to Past Orders.
+- backToCashier: Switches the view back to Cashier.
+- addNewPrice: Adds a new item price to the prices array.
+- completeOrder: Completes the current order and sends it to the server.
+- addItem: Adds a new item to the current order.
+- resetOrder: Resets the current order.
+- removeCompletedItem: Removes a completed item from the order.
+- editCompletedItem: Initiates the editing of a completed item.
+- handleEditSave: Handles saving changes made during item editing.
+- getTotalToppingsPrice: Calculates the total price of selected toppings.
+- EditModal: Modal component for editing completed items.
+- startNewOrder: Initiates a new order based on the selected item.
+- resetButtonsState: Resets the state of buttons.
+- selectItemType: Selects the type of ice cream item.
+- selectVessel: Selects the ice cream vessel.
+- selectSize: Selects the ice cream size.
+- selectFlavor: Selects an ice cream flavor.
+- selectTopping: Selects a topping for the ice cream.
+- getMaxFlavors: Returns the maximum number of flavors allowed for a given size.
+- hasPermission: Checks if the authenticated user has permission to access the cashier.
+- handleSignOut: Signs out the authenticated user.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>props</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The component props.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="pages_Cashier.js.html">pages/Cashier.js</a>, <a href="pages_Cashier.js.html#line68">line 68</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    The Cashier component.
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">React.Component</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="CategoryButton"><span class="type-signature"></span>CategoryButton<span class="signature">(props)</span><span class="type-signature"> &rarr; {React.Component}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    CategoryButton Component
+
+Represents a button used to select a category in the Menu component.
+
+Props:
+- category: The category that this button represents.
+- label: The display label for the button.
+- setSelectedCategory: Function to set the selected category in the parent component.
+- selectedCategory: The currently selected category.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>props</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The props for the CategoryButton component.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="pages_Menu.js.html">pages/Menu.js</a>, <a href="pages_Menu.js.html#line150">line 150</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    A button element representing a category.
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">React.Component</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="Customer"><span class="type-signature"></span>Customer<span class="signature">()</span><span class="type-signature"> &rarr; {React.Component}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Customer Component
+
+This component allows users to build a custom ice cream order. It includes functionality
+for selecting ice cream size, vessel, flavors, and toppings, and managing the overall order.
+
+State:
+- sizes: Array of available ice cream sizes.
+- flavors: Array of available ice cream flavors.
+- vessels: Array of available ice cream vessels.
+- toppings: Array of available toppings.
+- total: Total cost of the current order.
+- selectedSize: Currently selected size.
+- selectedVessel: Currently selected vessel.
+- selectedFlavors: Array of currently selected flavors.
+- selectedToppings: Array of currently selected toppings.
+- totalOrder: Array representing the complete order.
+- confirmationMessage: Message displayed upon order completion.
+- showConfirmation: Boolean to show/hide the order confirmation message.
+
+Functions:
+- handleSizeSelect: Sets the selected size and resets vessel, flavors, and toppings.
+- handleVesselSelect: Sets the selected vessel.
+- handleFlavorSelect: Adds a flavor to the selected flavors.
+- handleToppingSelect: Adds a topping to the selected toppings.
+- totalPrice: Calculates the total price of the current selection.
+- handleAddToOrder: Adds the current selection to the total order.
+- removeFromOrder: Removes an item from the total order.
+- completeOrder: Finalizes the order and sends it to the server.
+- editOrder: Allows editing of an existing order.
+- useEffect: Two useEffect hooks to fetch initial data for flavors, vessels, and toppings.
+
+Returns a JSX element with the structure of the ice cream order builder.
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="pages_Customer.js.html">pages/Customer.js</a>, <a href="pages_Customer.js.html#line42">line 42</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    The Customer component.
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">React.Component</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="Home"><span class="type-signature"></span>Home<span class="signature">()</span><span class="type-signature"> &rarr; {React.Component}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Home Component
+
+This component serves as the homepage for the Lick Honest Ice Creams website. It displays
+a welcome message, an image, information about the ice cream shop, and the current weather
+at the shop's location.
+
+State Variables:
+- weather: The current weather data fetched from an API.
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="pages_Home.js.html">pages/Home.js</a>, <a href="pages_Home.js.html#line45">line 45</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    The Home component.
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">React.Component</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="IceCreamList"><span class="type-signature"></span>IceCreamList<span class="signature">(props)</span><span class="type-signature"> &rarr; {React.Component}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    IceCreamList Component
+
+Displays a list of ice cream items.
+
+Props:
+- iceCreamItems: Array of ice cream items to display.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>props</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The props for the IceCreamList component.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="pages_Menu.js.html">pages/Menu.js</a>, <a href="pages_Menu.js.html#line176">line 176</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    A list of ice cream items.
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">React.Component</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="Manager"><span class="type-signature"></span>Manager<span class="signature">()</span><span class="type-signature"> &rarr; {React.Component}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Manager Component
+
+This component is responsible for managing stock items in the application.  It allows any user
+who is a manager to add and remove items from the menu, edit item details, and view insights on
+what items sell best with each other, what needs restocking, what has or has not been selling, and
+the company's sales.
+
+State Variables:
+- flavors: An array of flavor objects fetched from the server
+- toppings: An array of topping objects fetched from the server
+- vessels: An array of vessel objects fetched from the server
+- newFlavor: holds values for a possible new flavor
+- newTopping: holds values for a possible new topping
+- newVessel: holds values for a possible new vessel
+- deleteItem: holds the name of the item about to be removed
+- selectedItem: the currently selected item in the Items panel of manager
+- nameChange: an item's possible new name
+- descChange: an item's possible new description
+- priceChange: an item's possible new price
+- stockChange: an item's possible new quantity
+- imgChange: an item's possible new image address
+- selectedSection: either items or insights
+- selectedItemCategory: either all, flavors, toppings, or vessels
+- selectedNewItem: for adding or removing items based on category (either flavors, flavorsGone, toppings, toppingsGone, vessels, or vesselsGone)
+- itsAdd: Boolean to toggle if we are adding something to manager
+- itsRemove: Boolean to toggle if we are removing something from manager
+- restockData: holds the restock report data
+- excessData: holds the excess report data
+- togetherData: hold the what sells together report data
+- salesData: holds the sales report data
+- usageData: holds the product usage chart data
+- tempStartData: the possible start date input from the user, to be checked for validity
+- startDate: the start date used for the time period of all reports except restock
+- tempEndData: the possible end date input from the user, to be checked for validity
+- endDate: the end date used for the time period of all reports except restock and excess
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="pages_Manager.js.html">pages/Manager.js</a>, <a href="pages_Manager.js.html#line47">line 47</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    The Manager component.
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">React.Component</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="Menu"><span class="type-signature"></span>Menu<span class="signature">()</span><span class="type-signature"> &rarr; {React.Component}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Menu Component
+
+This component displays the menu for an ice cream shop. It includes category buttons to filter
+ice cream items and lists the items based on the selected category. The data for the items is
+fetched from a server.
+
+State Variables:
+- selectedCategory: The currently selected category for filtering items.
+- iceCreamData: Array of ice cream data fetched from the server.
+- vesselData: Array of vessel data fetched from the server.
+- toppingsData: Array of toppings data fetched from the server.
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="pages_Menu.js.html">pages/Menu.js</a>, <a href="pages_Menu.js.html#line22">line 22</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    The Menu component.
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">React.Component</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="Navbar"><span class="type-signature"></span>Navbar<span class="signature">()</span><span class="type-signature"> &rarr; {JSX.Element}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Navbar Component
+
+A React component representing the navigation bar.
+It includes links to different pages such as Home, Admin, Manager, Cashier, Order Ahead, and Menu.
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="components_Navbar.js.html">components/Navbar.js</a>, <a href="components_Navbar.js.html#line13">line 13</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    JSX element representing the navigation bar.
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">JSX.Element</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="PastOrders"><span class="type-signature"></span>PastOrders<span class="signature">(props)</span><span class="type-signature"> &rarr; {JSX.Element}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Past Orders Component
+
+This component displays and manages past orders for the cashier. It allows selecting and
+viewing details of past orders, updating their status, and deleting them.
+
+State:
+- orderIds: Array of order IDs for the past 35 orders.
+- selectedOrderId: Currently selected order ID.
+- orderDetails: Details of the selected order.
+- selectedStatus: Currently selected order status.
+
+Functions:
+- handleOrderChange: Handles the change of the selected order in the dropdown.
+- fetchOrderDetails: Fetches details of the selected order.
+- handleStatusChange: Handles the change of order status.
+- handleDeleteOrder: Handles the deletion of the selected order.
+- fetchOrderIds: Fetches the list of order IDs from the server.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>props</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">React component props.
+                <h6>Properties</h6>
+                
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>backToCashier</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Callback function to navigate back to the Cashier page.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+            </td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="pages_PastOrders.js.html">pages/PastOrders.js</a>, <a href="pages_PastOrders.js.html#line29">line 29</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    Past Orders component.
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">JSX.Element</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="SignIn"><span class="type-signature"></span>SignIn<span class="signature">()</span><span class="type-signature"> &rarr; {React.Component}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    SignIn Component
+
+This component provides a button for users to sign in using their Google account.
+It utilizes Firebase's authentication system to handle the sign-in process.
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="pages_SignIn.js.html">pages/SignIn.js</a>, <a href="pages_SignIn.js.html#line19">line 19</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    The SignIn component with a Google sign-in button.
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">React.Component</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="addInfoPrompt"><span class="type-signature"></span>addInfoPrompt<span class="signature">()</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Add extra info
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="backend_venv_lib_python3.8_site-packages_werkzeug_debug_shared_debugger.js.html">backend/venv/lib/python3.8/site-packages/werkzeug/debug/shared/debugger.js</a>, <a href="backend_venv_lib_python3.8_site-packages_werkzeug_debug_shared_debugger.js.html#line154">line 154</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="addInfoPrompt"><span class="type-signature"></span>addInfoPrompt<span class="signature">()</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Add extra info
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="backend_venv_lib64_python3.8_site-packages_werkzeug_debug_shared_debugger.js.html">backend/venv/lib64/python3.8/site-packages/werkzeug/debug/shared/debugger.js</a>, <a href="backend_venv_lib64_python3.8_site-packages_werkzeug_debug_shared_debugger.js.html#line154">line 154</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="addToggleTraceTypesOnClick"><span class="type-signature"></span>addToggleTraceTypesOnClick<span class="signature">()</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    toggle traceback types on click.
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="backend_venv_lib_python3.8_site-packages_werkzeug_debug_shared_debugger.js.html">backend/venv/lib/python3.8/site-packages/werkzeug/debug/shared/debugger.js</a>, <a href="backend_venv_lib_python3.8_site-packages_werkzeug_debug_shared_debugger.js.html#line197">line 197</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="addToggleTraceTypesOnClick"><span class="type-signature"></span>addToggleTraceTypesOnClick<span class="signature">()</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    toggle traceback types on click.
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="backend_venv_lib64_python3.8_site-packages_werkzeug_debug_shared_debugger.js.html">backend/venv/lib64/python3.8/site-packages/werkzeug/debug/shared/debugger.js</a>, <a href="backend_venv_lib64_python3.8_site-packages_werkzeug_debug_shared_debugger.js.html#line197">line 197</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="openShell"><span class="type-signature"></span>openShell<span class="signature">()</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Helper function for shell initialization
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="backend_venv_lib_python3.8_site-packages_werkzeug_debug_shared_debugger.js.html">backend/venv/lib/python3.8/site-packages/werkzeug/debug/shared/debugger.js</a>, <a href="backend_venv_lib_python3.8_site-packages_werkzeug_debug_shared_debugger.js.html#line93">line 93</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="openShell"><span class="type-signature"></span>openShell<span class="signature">()</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Helper function for shell initialization
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="backend_venv_lib64_python3.8_site-packages_werkzeug_debug_shared_debugger.js.html">backend/venv/lib64/python3.8/site-packages/werkzeug/debug/shared/debugger.js</a>, <a href="backend_venv_lib64_python3.8_site-packages_werkzeug_debug_shared_debugger.js.html#line93">line 93</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+    
+
+    
+
+    
+</article>
+
+</section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#Admin">Admin</a></li><li><a href="global.html#App">App</a></li><li><a href="global.html#Cashier">Cashier</a></li><li><a href="global.html#CategoryButton">CategoryButton</a></li><li><a href="global.html#Customer">Customer</a></li><li><a href="global.html#Home">Home</a></li><li><a href="global.html#IceCreamList">IceCreamList</a></li><li><a href="global.html#Manager">Manager</a></li><li><a href="global.html#Menu">Menu</a></li><li><a href="global.html#Navbar">Navbar</a></li><li><a href="global.html#PastOrders">PastOrders</a></li><li><a href="global.html#SignIn">SignIn</a></li><li><a href="global.html#addInfoPrompt">addInfoPrompt</a></li><li><a href="global.html#addToggleTraceTypesOnClick">addToggleTraceTypesOnClick</a></li><li><a href="global.html#firebaseConfig">firebaseConfig</a></li><li><a href="global.html#openShell">openShell</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Wed Dec 06 2023 16:21:41 GMT-0600 (Central Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

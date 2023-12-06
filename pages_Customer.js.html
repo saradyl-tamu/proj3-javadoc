@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: pages/Customer.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: pages/Customer.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import React, { useState, useEffect } from 'react';
+import './Customer.css';
+
+let http_address = "http://127.0.0.1:5000";
+// let http_address = "http://18.227.52.89:5000/";
+
+/**
+ * Customer Component
+ * 
+ * This component allows users to build a custom ice cream order. It includes functionality
+ * for selecting ice cream size, vessel, flavors, and toppings, and managing the overall order.
+ * 
+ * State:
+ * - sizes: Array of available ice cream sizes.
+ * - flavors: Array of available ice cream flavors.
+ * - vessels: Array of available ice cream vessels.
+ * - toppings: Array of available toppings.
+ * - total: Total cost of the current order.
+ * - selectedSize: Currently selected size.
+ * - selectedVessel: Currently selected vessel.
+ * - selectedFlavors: Array of currently selected flavors.
+ * - selectedToppings: Array of currently selected toppings.
+ * - totalOrder: Array representing the complete order.
+ * - confirmationMessage: Message displayed upon order completion.
+ * - showConfirmation: Boolean to show/hide the order confirmation message.
+ * 
+ * Functions:
+ * - handleSizeSelect: Sets the selected size and resets vessel, flavors, and toppings.
+ * - handleVesselSelect: Sets the selected vessel.
+ * - handleFlavorSelect: Adds a flavor to the selected flavors.
+ * - handleToppingSelect: Adds a topping to the selected toppings.
+ * - totalPrice: Calculates the total price of the current selection.
+ * - handleAddToOrder: Adds the current selection to the total order.
+ * - removeFromOrder: Removes an item from the total order.
+ * - completeOrder: Finalizes the order and sends it to the server.
+ * - editOrder: Allows editing of an existing order.
+ * - useEffect: Two useEffect hooks to fetch initial data for flavors, vessels, and toppings.
+ * 
+ * Returns a JSX element with the structure of the ice cream order builder.
+ * @returns {React.Component} The Customer component.
+ */
+const Customer = () => {
+  const [sizes, setSizes] = useState([
+    { id: 0, name: 'Kiddie', price: 3.99, description: 'Pick 1 flavor!', flavorsLimit: 1 },
+    { id: 1, name: 'Small', price: 4.99, description: 'Pick up to 2 flavors!', flavorsLimit: 2 },
+    { id: 2, name: 'Medium', price: 5.99, description: 'Pick up to 3 flavors!', flavorsLimit: 3 },
+    { id: 3, name: 'Large', price: 6.99, description: 'Pick up to 4 flavors!', flavorsLimit: 4 }
+  ]);
+
+  const [flavors, setFlavors] = useState([]);
+
+  const [vessels, setVessels] = useState([]);
+
+  const [toppings, setToppings] = useState([]);
+
+  const [total, setTotal] = useState(0);
+  const [selectedSize, setSelectedSize] = useState(null);
+  const [selectedVessel, setSelectedVessel] = useState(null);
+  const [selectedFlavors, setSelectedFlavors] = useState([]);
+  const [selectedToppings, setSelectedToppings] = useState([]);
+  const [totalOrder, setTotalOrder] = useState([]);
+  const [confirmationMessage, setConfirmationMessage] = useState(false);
+  const [showConfirmation, setShowConfirmation] = useState(false);
+  
+  /**
+   * Handles the selection of an ice cream size.
+   * Resets the selected vessel, flavors, and toppings upon size selection.
+   * 
+   * @param {Object} size - The selected size object.
+   */
+  const handleSizeSelect = (size) => {
+    setSelectedSize(size);
+    setSelectedVessel(null);
+    setSelectedFlavors([]);
+    setSelectedToppings([]);
+  };
+
+  /**
+   * Handles the selection of an ice cream vessel.
+   * 
+   * @param {Object} vessel - The selected vessel object.
+   */
+  const handleVesselSelect = (vessel) => {
+    setSelectedVessel(vessel);
+  };
+
+  /**
+   * Handles the selection of an ice cream flavor.
+   * Adds the selected flavor to the list of selected flavors if the limit has not been reached.
+   * 
+   * @param {Object} flavor - The selected flavor object.
+   */
+  const handleFlavorSelect = (flavor) => {
+    if (selectedFlavors.length &lt; selectedSize.flavorsLimit) {
+      setSelectedFlavors((prevFlavors) => [...prevFlavors, flavor]);
+    }
+  };
+
+  /**
+   * Handles the selection of a topping.
+   * Adds the selected topping to the list of selected toppings.
+   * 
+   * @param {Object} topping - The selected topping object.
+   */
+  const handleToppingSelect = (topping) => {
+    setSelectedToppings((prevToppings) => [...prevToppings, topping]);
+  };
+
+  /**
+   * Calculates the total price of the current selection including size, vessel, and toppings.
+   * 
+   * @returns {number} The total price.
+   */
+  const totalPrice = () => {
+    const sizePrice = selectedSize ? selectedSize.price : 0;
+    const vesselPrice = selectedVessel ? selectedVessel.price : 0;
+    const toppingsPrice = selectedToppings.reduce((total, topping) => total + topping.price, 0);
+    return sizePrice + vesselPrice + toppingsPrice;
+  };
+
+  /**
+   * Adds the current selection to the total order.
+   * Resets the selections after adding to the order.
+   */
+  const handleAddToOrder = () => {
+    const newItem = {
+      orderID: totalOrder.length + 1,
+      size: selectedSize,
+      vessel: selectedVessel,
+      flavors: selectedFlavors,
+      toppings: selectedToppings,
+      totalPrice: totalPrice(),
+    };
+
+    
+    setTotalOrder((prevTotalOrder) => [...prevTotalOrder, newItem]);
+    // Recalculate total price after adding an item
+    const newTotalPrice = newItem.totalPrice;
+    let temp = total + totalPrice(newTotalPrice);
+    setTotal(temp);
+
+    // Reset selections after adding to the order
+    setSelectedSize(null);
+    setSelectedVessel(null);
+    setSelectedFlavors([]);
+    setSelectedToppings([]);
+  };
+
+
+  /**
+   * Removes an item from the order based on its order ID.
+   * Recalculates the total price after removing the item.
+   * 
+   * @param {number} orderId - The ID of the order item to remove.
+   */
+  const removeFromOrder = (orderId) => {
+    const removedItem = totalOrder.find((item) => item.orderID === orderId);
+  
+    if (removedItem) {
+      const updatedOrder = totalOrder.filter((item) => item.orderID !== orderId);
+      setTotalOrder(updatedOrder);
+  
+      // Recalculate total price after removing an item
+      const newTotalPrice = updatedOrder.reduce((total, item) => total + item.totalPrice, 0);
+      setTotal(newTotalPrice);
+    }
+  };
+
+  /**
+   * Finalizes the order, sends it to the server, and handles the response.
+   * Resets the order and total after completion.
+   */
+  const completeOrder = async () => {
+    try {
+      // Extract item names from the totalOrder
+      const itemNames = totalOrder.flatMap(item => [
+        item.vessel.name,
+        ...item.flavors.map(flavor => flavor.name),
+        ...(item.toppings &amp;&amp; item.toppings.length > 0 ? item.toppings.map(topping => topping.name) : [])
+      ]);
+
+      // Prepare the data to be sent
+      const orderData = {
+        itemNames: itemNames,
+        total: total
+      };
+
+      // Send a PUT request to the add_data endpoint
+      const response = await fetch(http_address + '/create_order', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          orderItems: itemNames,
+          totalPrice: total,
+        })
+      });
+
+      if (response.ok) {
+        console.log('Success:', orderData);
+        setConfirmationMessage("Order submitted successfully!");
+        setShowConfirmation(true);
+        setTimeout(() => {
+          setShowConfirmation(false);
+        }, 3000);
+      }
+      else {
+        console.log('Error');
+      }
+    }
+    catch (error) {
+      console.error('Error:', error);
+      setConfirmationMessage("Failed to submit order. Please try again.");
+      setShowConfirmation(true);
+      setTimeout(() => {
+        setShowConfirmation(false);
+      }, 3000);
+    };
+
+    setTotalOrder([]);
+    setTotal(0);
+  }
+
+  /**
+   * Allows editing of an existing order.
+   * Sets the selected size, vessel, flavors, and toppings to those of the order being edited.
+   * Removes the edited item from the total order.
+   * 
+   * @param {number} orderId - The ID of the order item to edit.
+   */
+  const editOrder = (orderId) => {
+  const orderToEdit = totalOrder.find((item) => item.orderID === orderId);
+  if (orderToEdit) {
+    setSelectedSize(orderToEdit.size);
+    setSelectedVessel(orderToEdit.vessel);
+    setSelectedFlavors(orderToEdit.flavors);
+    setSelectedToppings(orderToEdit.toppings);
+    // Remove the item being edited from the total order
+    removeFromOrder(orderId);
+  }
+};
+
+  // Function to query the database and pull icecream information
+  useEffect(() => {
+    fetch(http_address + '/icecream_data').then(res => res.json()).then(data => {
+      var all_data = data.value;
+      var arr = [];
+      for (var i = 0; i &lt; all_data.length; i++) {
+        let newFlavor = {
+          id: all_data[i]['item_id'],
+          name: all_data[i]['name'],
+          price: all_data[i]['price'],
+          description: all_data[i]['description'],
+          imgurl: all_data[i]['image']
+        };
+        arr.push(newFlavor);
+      }
+      setFlavors([...flavors, ...arr]);
+    });
+  }, []);
+
+  // Function to query the database and pull vessel information
+  useEffect(() => {
+    fetch(http_address + '/vessel_data').then(res => res.json()).then(data => {
+      var all_data = data.value;
+      var arr = [];
+      for (var i = 0; i &lt; all_data.length; i++) {
+        let newVessel = {
+          id: all_data[i]['item_id'],
+          name: all_data[i]['name'],
+          price: all_data[i]['price'],
+          description: all_data[i]['description'],
+          imgurl: all_data[i]['image']
+        };
+        arr.push(newVessel);
+      }
+      setVessels([...vessels, ...arr]);
+    });
+  }, []);
+
+  // Function to query the database and pull topping information
+  useEffect(() => {
+    fetch(http_address + '/topping_data').then(res => res.json()).then(data => {
+      var all_data = data.value;
+      var arr = [];
+      for (var i = 0; i &lt; all_data.length; i++) {
+        let newTopping = {
+          id: all_data[i]['item_id'],
+          name: all_data[i]['name'],
+          price: all_data[i]['price'],
+          description: all_data[i]['description'],
+          imgurl: all_data[i]['image']
+        };
+        arr.push(newTopping);
+      }
+      setToppings([...toppings, ...arr]);
+    });
+  }, []);
+    
+  
+  return (
+    &lt;>
+      &lt;>
+      &lt;div>
+        &lt;h1>Build Your Ice Cream!&lt;/h1>
+        &lt;div className="category">
+          &lt;h3>Choose Size:&lt;/h3>
+          &lt;div className="items">
+            {sizes.map((size) => (
+              &lt;button key={size.id} onClick={() => handleSizeSelect(size)} className="item-button">
+                &lt;p>&lt;strong>{size.name} - ${size.price}&lt;/strong>&lt;/p>
+                &lt;p>{size.description}&lt;/p>
+              &lt;/button>
+            ))}
+          &lt;/div>
+        &lt;/div>
+        {selectedSize &amp;&amp; (
+          &lt;div className="category">
+            &lt;h3>Choose Vessel:&lt;/h3>
+            &lt;div className="items">
+              {vessels.map((vessel) => (
+                &lt;button className="item-button" key={vessel.id} onClick={() => handleVesselSelect(vessel)}>
+                  &lt;p>&lt;strong>{vessel.name} - ${vessel.price}&lt;/strong>&lt;/p>
+                  &lt;img className="item-img" src={vessel.imgurl} alt={vessel.name}/>
+                  &lt;p>{vessel.description}&lt;/p>
+                &lt;/button>
+              ))}
+            &lt;/div>
+          &lt;/div>
+        )}
+        {selectedVessel &amp;&amp; (
+          &lt;div className="category">
+            &lt;h3>Choose Flavors ({selectedSize.flavorsLimit} max):&lt;/h3>
+            &lt;div className="flavor-items">
+              {flavors.map((flavor) => (
+                &lt;button key={flavor.id} onClick={() => handleFlavorSelect(flavor)} className="flavor-item-button">
+                  &lt;p>&lt;strong>{flavor.name}&lt;/strong>&lt;/p>
+                  &lt;img className="item-img" src={flavor.imgurl} alt={flavor.name}/>
+                  &lt;p>{flavor.description}&lt;/p>
+                &lt;/button>
+              ))}
+            &lt;/div>
+            &lt;p className="flavors-left">&lt;strong>Flavors remaining:&lt;/strong> {selectedSize.flavorsLimit - selectedFlavors.length}&lt;/p>
+          &lt;/div>
+        )} 
+        {selectedSize &amp;&amp; selectedFlavors.length > 0 &amp;&amp; (
+          &lt;div className="category">
+            &lt;h3>Choose Toppings:&lt;/h3>
+            &lt;div className="items">
+              {toppings.map((topping) => (
+                &lt;button key={topping.id} onClick={() => handleToppingSelect(topping)} className="topping-button">
+                  &lt;p>&lt;strong>{topping.name} - ${topping.price}&lt;/strong>&lt;/p>
+                  &lt;img className="item-img" src={topping.imgurl} alt={topping.name}/>
+                  &lt;p>{topping.description}&lt;/p>
+                &lt;/button>
+              ))}
+            &lt;/div>
+          &lt;/div>
+        )}
+      &lt;/div>
+      
+      &lt;div className="curritem-order-panel">
+        &lt;div className="current-item">
+          &lt;h2>Current Item&lt;/h2>
+          &lt;p>&lt;strong>Size:&lt;/strong> {selectedSize?.name}&lt;/p>
+          &lt;p>&lt;strong>Vessel:&lt;/strong> {selectedVessel?.name}&lt;/p>
+          &lt;p>&lt;strong>Flavors:&lt;/strong> {selectedFlavors.map((flavor) => flavor.name).join(', ')}&lt;/p>
+          &lt;p>&lt;strong>Toppings:&lt;/strong> {selectedToppings.map((topping) => topping.name).join(', ')}&lt;/p>
+          &lt;p>&lt;strong>Price: $&lt;/strong>{totalPrice().toFixed(2)}&lt;/p>
+          &lt;button onClick={handleAddToOrder} disabled={!selectedSize || !selectedVessel || selectedFlavors.length === 0} className="add-button">
+            Add to Order
+          &lt;/button>
+        &lt;/div>
+
+        &lt;div className="order">
+          &lt;h2>Your Order&lt;/h2>
+          &lt;ul className="order-ul">
+            {totalOrder.map((item) => (
+              &lt;li key={item.orderID}>
+                &lt;strong>Size:&lt;/strong> {item.size.name}, &lt;strong>Vessel:&lt;/strong> {item.vessel.name}, &lt;strong>Flavors:&lt;/strong> {item.flavors.map((flavor) => flavor.name).join(', ')}, &lt;strong>Toppings:&lt;/strong> {item.toppings.map((topping) => topping.name).join(', ')}, &lt;strong>Cost:&lt;/strong> ${item.totalPrice.toFixed(2)}
+                &lt;button className="remove-button" onClick={() => removeFromOrder(item.orderID)}>Remove&lt;/button>
+              &lt;/li>
+            ))}
+          &lt;/ul>
+          &lt;p>&lt;strong>Tax: $&lt;/strong>{(total * 0.0825).toFixed(2)}&lt;/p>
+          &lt;p>&lt;strong>Total Price: $&lt;/strong>{(total + total * 0.0825).toFixed(2)}&lt;/p>
+          &lt;button className="finish-button" onClick={() => completeOrder()}>Complete Order&lt;/button>
+          {/* Display the confirmation pop-up */}
+          {showConfirmation &amp;&amp; (
+            &lt;div className="confirmation-popup">
+              &lt;p>{confirmationMessage}&lt;/p>
+            &lt;/div>
+          )}
+        &lt;/div>
+      &lt;/div>
+      &lt;/> 
+    &lt;/>
+  );
+};
+
+export default Customer;</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#Admin">Admin</a></li><li><a href="global.html#App">App</a></li><li><a href="global.html#Cashier">Cashier</a></li><li><a href="global.html#CategoryButton">CategoryButton</a></li><li><a href="global.html#Customer">Customer</a></li><li><a href="global.html#Home">Home</a></li><li><a href="global.html#IceCreamList">IceCreamList</a></li><li><a href="global.html#Manager">Manager</a></li><li><a href="global.html#Menu">Menu</a></li><li><a href="global.html#Navbar">Navbar</a></li><li><a href="global.html#PastOrders">PastOrders</a></li><li><a href="global.html#SignIn">SignIn</a></li><li><a href="global.html#addInfoPrompt">addInfoPrompt</a></li><li><a href="global.html#addToggleTraceTypesOnClick">addToggleTraceTypesOnClick</a></li><li><a href="global.html#firebaseConfig">firebaseConfig</a></li><li><a href="global.html#openShell">openShell</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Wed Dec 06 2023 16:21:41 GMT-0600 (Central Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

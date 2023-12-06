@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: pages/Menu.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: pages/Menu.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import React, { useState, useEffect } from 'react';
+import './Menu.css';
+
+let http_address = "http://127.0.0.1:5000";
+// let http_address = "http://18.227.52.89:5000/";
+
+/**
+ * Menu Component
+ * 
+ * This component displays the menu for an ice cream shop. It includes category buttons to filter
+ * ice cream items and lists the items based on the selected category. The data for the items is
+ * fetched from a server.
+ * 
+ * State Variables:
+ * - selectedCategory: The currently selected category for filtering items.
+ * - iceCreamData: Array of ice cream data fetched from the server.
+ * - vesselData: Array of vessel data fetched from the server.
+ * - toppingsData: Array of toppings data fetched from the server.
+ * 
+ * @returns {React.Component} The Menu component.
+ */
+const Menu = () => {
+  const [selectedCategory, setSelectedCategory] = useState();
+
+  // TO DO: REPLACE WITH DATABASE QUERY
+  const [iceCreamData, setIceCreamData] = useState([]);
+  const [vesselData, setVesselData] = useState([]);
+  const [toppingsData, setToppingsData] = useState([]);
+
+  useEffect(() => {
+    fetch(http_address + '/icecream_data').then(res => res.json()).then(data => {
+      var all_data = data.value;
+      console.log(all_data.length);
+      var arr = [];
+      for (var i = 0; i &lt; all_data.length; i++) {
+        var temp;
+        if (all_data[i]['is_vegan'] == "t") {
+          temp = 'vegan';
+        }
+        else if (all_data[i]['seasonal'] == "summer" || all_data[i]['seasonal'] == "winter" || all_data[i]['seasonal'] == "fall" || all_data[i]['seasonal'] == "spring") {
+          temp = 'seasonal';
+        }
+        else {
+          temp = 'everyday';
+        }
+
+        let newFlavor = {
+          name: all_data[i]['name'],
+          image: all_data[i]['image'],
+          description: all_data[i]['description'],
+          category: temp
+        };
+        arr.push(newFlavor);
+      }
+      setIceCreamData([...iceCreamData, ...arr]);
+    });
+  }, []);
+
+  useEffect(() => {
+    fetch(http_address + '/vessel_data').then(res => res.json()).then(data => {
+      var all_data = data.value;
+      var arr = [];
+      for (var i = 0; i &lt; all_data.length; i++) {
+        let newVessel = {
+          name: all_data[i]['name'],
+          category: 'cones',
+          description: all_data[i]['description'],
+          image: all_data[i]['image']
+        };
+        arr.push(newVessel);
+      }
+      setVesselData([...vesselData, ...arr]);
+    });
+  }, []);
+
+  useEffect(() => {
+    fetch(http_address + '/topping_data').then(res => res.json()).then(data => {
+      var all_data = data.value;
+      var arr = [];
+      for (var i = 0; i &lt; all_data.length; i++) {
+        let newTopping = {
+          name: all_data[i]['name'],
+          category: 'toppings',
+          description: all_data[i]['description'],
+          image: all_data[i]['image']
+        };
+        arr.push(newTopping);
+      }
+      setToppingsData([...toppingsData, ...arr]);
+    });
+  }, []);
+
+  // Filter ice cream items based on the selected category
+  const filteredIceCream = [...iceCreamData, ...vesselData, ...toppingsData].filter(item => item.category === selectedCategory);
+
+  return (
+    &lt;div>
+      &lt;div className="flavor-category-buttons">
+        &lt;CategoryButton
+          category="everyday"
+          label="Everyday"
+          setSelectedCategory={setSelectedCategory}
+          selectedCategory={selectedCategory}
+        />
+        &lt;CategoryButton
+          category="seasonal"
+          label="Seasonal"
+          setSelectedCategory={setSelectedCategory}
+          selectedCategory={selectedCategory}
+        />
+        &lt;CategoryButton
+          category="vegan"
+          label="Vegan"
+          setSelectedCategory={setSelectedCategory}
+          selectedCategory={selectedCategory}
+        />
+        &lt;CategoryButton
+          category="cones"
+          label="Cones"
+          setSelectedCategory={setSelectedCategory}
+          selectedCategory={selectedCategory}
+        />
+        &lt;CategoryButton
+          category="toppings"
+          label="Toppings"
+          setSelectedCategory={setSelectedCategory}
+          selectedCategory={selectedCategory}
+        />
+      &lt;/div>
+      
+      &lt;IceCreamList iceCreamItems={filteredIceCream} />
+    &lt;/div>
+  );
+};
+
+/**
+ * CategoryButton Component
+ * 
+ * Represents a button used to select a category in the Menu component.
+ * 
+ * Props:
+ * - category: The category that this button represents.
+ * - label: The display label for the button.
+ * - setSelectedCategory: Function to set the selected category in the parent component.
+ * - selectedCategory: The currently selected category.
+ * 
+ * @param {Object} props - The props for the CategoryButton component.
+ * @returns {React.Component} A button element representing a category.
+ */
+const CategoryButton = ({ category, label, setSelectedCategory, selectedCategory }) => {
+  const handleClick = () => {
+    setSelectedCategory(category);
+  };
+
+  return (
+    &lt;button
+      onClick={handleClick}
+      className={category === selectedCategory ? 'active' : ''}
+    >
+      {label}
+    &lt;/button>
+  );
+};
+
+/**
+ * IceCreamList Component
+ * 
+ * Displays a list of ice cream items.
+ * 
+ * Props:
+ * - iceCreamItems: Array of ice cream items to display.
+ * 
+ * @param {Object} props - The props for the IceCreamList component.
+ * @returns {React.Component} A list of ice cream items.
+ */
+const IceCreamList = ({ iceCreamItems }) => {
+  return (
+    &lt;div className = "menu-container">
+      &lt;ul className = 'menu-items'>
+        {iceCreamItems.map(item => (
+          &lt;li className = 'menu-items' key={item.name}>
+            &lt;h3>{item.name}&lt;/h3>
+            &lt;img src={item.image} alt={item.name} />
+            &lt;p>{item.description}&lt;/p>
+          &lt;/li>
+        ))}
+      &lt;/ul>
+    &lt;/div>
+  );
+};
+
+export default Menu;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#Admin">Admin</a></li><li><a href="global.html#App">App</a></li><li><a href="global.html#Cashier">Cashier</a></li><li><a href="global.html#CategoryButton">CategoryButton</a></li><li><a href="global.html#Customer">Customer</a></li><li><a href="global.html#Home">Home</a></li><li><a href="global.html#IceCreamList">IceCreamList</a></li><li><a href="global.html#Manager">Manager</a></li><li><a href="global.html#Menu">Menu</a></li><li><a href="global.html#Navbar">Navbar</a></li><li><a href="global.html#PastOrders">PastOrders</a></li><li><a href="global.html#SignIn">SignIn</a></li><li><a href="global.html#addInfoPrompt">addInfoPrompt</a></li><li><a href="global.html#addToggleTraceTypesOnClick">addToggleTraceTypesOnClick</a></li><li><a href="global.html#firebaseConfig">firebaseConfig</a></li><li><a href="global.html#openShell">openShell</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Wed Dec 06 2023 16:21:41 GMT-0600 (Central Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

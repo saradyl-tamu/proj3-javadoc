@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: pages/Home.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: pages/Home.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import logo from './../icecream.gif'
+import './Home.css'
+
+
+const pageStyle = {
+  backgroundColor: '#f7efde',
+  minHeight: '100vh',
+};
+
+const containerStyle = {
+  backgroundColor: '#f7efde',
+  padding: '20px', 
+  textAlign: 'center',
+};
+
+const imageContainerStyle = {
+  display: 'flex',
+  justifyContent: 'center',
+};
+
+const imageStyle = {
+  width: '200px', 
+  margin: '10px', 
+};
+
+const textContainerStyle = {
+  marginTop: '20px',
+  marginBottom: '50px'
+};
+
+/**
+ * Home Component
+ * 
+ * This component serves as the homepage for the Lick Honest Ice Creams website. It displays
+ * a welcome message, an image, information about the ice cream shop, and the current weather
+ * at the shop's location.
+ * 
+ * State Variables:
+ * - weather: The current weather data fetched from an API.
+ * 
+ * @returns {React.Component} The Home component.
+ */
+function Home() {
+  const [weather, setWeather] = useState(null);
+
+  /**
+   * Fetches the current weather data from the Open-Meteo API.
+   * Uses the coordinates for College Station, TX.
+   */
+  useEffect(() => {
+    const fetchWeather = async () => {
+      try {
+        // Using College Station, TX coordinates: Latitude 30.6280, Longitude -96.3344
+        const response = await axios.get('https://api.open-meteo.com/v1/forecast', {
+          params: {
+            latitude: 30.6280,
+            longitude: -96.3344,
+            current_weather: true
+          }
+        });
+        setWeather(response.data.current_weather);
+      } catch (error) {
+        console.error("Error fetching weather data:", error);
+      }
+    };
+
+    fetchWeather();
+  }, []);
+
+  /**
+   * Converts a temperature from Celsius to Fahrenheit.
+   * 
+   * @param {number} celsius - The temperature in Celsius.
+   * @returns {number} The temperature in Fahrenheit.
+   */
+  const convertCelsiusToFahrenheit = (celsius) => {
+    return (celsius * 9/5) + 32;
+  };
+
+  return (
+    &lt;div style={pageStyle}>
+    &lt;div style={containerStyle}>
+      &lt;h1>Welcome to Lick Honest Ice Creams!&lt;/h1>
+      &lt;div style={imageContainerStyle}>
+        &lt;img src={logo} alt="dancing ice cream man" style={imageStyle} />
+      &lt;/div>
+      &lt;p className="about-lick">
+        To us, "honest" simply means we use the purest ingredients we can find in our artisanal ice creams. 
+        What doesn’t go into our ice creams is just as important as what does. We never use artificial colors or 
+        flavors, high fructose corn syrup or preservatives, ever! We can trace every single ingredient we use to 
+        its source. Ice cream shouldn’t just taste good — we believe it should also be good.
+      &lt;/p>
+      &lt;div style={textContainerStyle}>
+        &lt;p> &lt;strong>Address&lt;/strong>&lt;br /> 
+            143 Century Square Dr, Suite 11,&lt;br /> 
+            College Station, TX 77840&lt;/p>
+        &lt;p> &lt;strong>Hours&lt;/strong>&lt;br />
+            Sun - Thu: 12:30pm 'til 10pm &lt;br /> 
+            Fri - Sat: 12pm 'til 11pm&lt;/p>
+        &lt;p> &lt;strong>Phone Number&lt;/strong>&lt;br />
+            (979) 704-0306&lt;/p>
+      &lt;/div>
+
+      &lt;div className="weather">
+          {weather &amp;&amp; (
+            &lt;div>
+              &lt;h2>Current Weather&lt;/h2>
+              &lt;p>Temperature: {convertCelsiusToFahrenheit(weather.temperature).toFixed(1)} °F&lt;/p>
+              &lt;p>Wind Speed: {weather.windspeed} km/h&lt;/p>
+            &lt;/div>
+          )}
+        &lt;/div>
+    &lt;/div>
+    &lt;/div>
+    
+  );
+}
+
+export default Home;</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#Admin">Admin</a></li><li><a href="global.html#App">App</a></li><li><a href="global.html#Cashier">Cashier</a></li><li><a href="global.html#CategoryButton">CategoryButton</a></li><li><a href="global.html#Customer">Customer</a></li><li><a href="global.html#Home">Home</a></li><li><a href="global.html#IceCreamList">IceCreamList</a></li><li><a href="global.html#Manager">Manager</a></li><li><a href="global.html#Menu">Menu</a></li><li><a href="global.html#Navbar">Navbar</a></li><li><a href="global.html#PastOrders">PastOrders</a></li><li><a href="global.html#SignIn">SignIn</a></li><li><a href="global.html#addInfoPrompt">addInfoPrompt</a></li><li><a href="global.html#addToggleTraceTypesOnClick">addToggleTraceTypesOnClick</a></li><li><a href="global.html#firebaseConfig">firebaseConfig</a></li><li><a href="global.html#openShell">openShell</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Wed Dec 06 2023 16:21:41 GMT-0600 (Central Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
