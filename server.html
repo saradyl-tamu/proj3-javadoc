@@ -1,0 +1,224 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><title>Python: module server</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+</head><body bgcolor="#f0f0f8">
+
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="heading">
+<tr bgcolor="#7799ee">
+<td valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong>server</strong></big></big></font></td
+><td align=right valign=bottom
+><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="file:/Users/matt/Projects/project-3-906_1/src/backend/server.py">/Users/matt/Projects/project-3-906_1/src/backend/server.py</a></font></td></tr></table>
+    <p><tt>#&nbsp;Import&nbsp;flask&nbsp;and&nbsp;datetime&nbsp;module&nbsp;for&nbsp;showing&nbsp;date&nbsp;and&nbsp;time</tt></p>
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#aa55cc">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Modules</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#aa55cc"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><table width="100%" summary="list"><tr><td width="25%" valign=top><a href="firebase_admin.auth.html">firebase_admin.auth</a><br>
+</td><td width="25%" valign=top><a href="backend.html">backend</a><br>
+</td><td width="25%" valign=top><a href="firebase_admin.credentials.html">firebase_admin.credentials</a><br>
+</td><td width="25%" valign=top><a href="time.html">time</a><br>
+</td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#eeaa77">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Functions</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#eeaa77"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl><dt><a name="-add_icecream"><strong>add_icecream</strong></a>(item_id, vegan, dairy, seasonal)</dt><dd><tt>Adds&nbsp;data&nbsp;to&nbsp;icecream&nbsp;table&nbsp;when&nbsp;creating&nbsp;new&nbsp;item<br>
+&nbsp;<br>
+Param:&nbsp;item_id<br>
+Param:&nbsp;is_vegan<br>
+Param:&nbsp;is_dairy_free<br>
+Param:&nbsp;seasonal</tt></dd></dl>
+ <dl><dt><a name="-add_item"><strong>add_item</strong></a>()</dt><dd><tt>Create&nbsp;item<br>
+PUT&nbsp;request&nbsp;-&gt;&nbsp;add&nbsp;new&nbsp;item&nbsp;to&nbsp;the&nbsp;database<br>
+&nbsp;<br>
+Param:&nbsp;name<br>
+Param:&nbsp;description<br>
+Param:&nbsp;quantity<br>
+Param:&nbsp;min_quantity<br>
+Param:&nbsp;price<br>
+Param:&nbsp;imgURL<br>
+Param:&nbsp;item_type<br>
+&nbsp;<br>
+if&nbsp;icecream:<br>
+Param:&nbsp;is_vegan<br>
+Param:&nbsp;is_dairy_free<br>
+Param:&nbsp;seasonal</tt></dd></dl>
+ <dl><dt><a name="-add_menuitem"><strong>add_menuitem</strong></a>(item_id)</dt><dd><tt>Adds&nbsp;data&nbsp;to&nbsp;menuitem&nbsp;table&nbsp;when&nbsp;creating&nbsp;new&nbsp;item<br>
+&nbsp;<br>
+Param:&nbsp;item_id</tt></dd></dl>
+ <dl><dt><a name="-add_topping"><strong>add_topping</strong></a>(item_id)</dt><dd><tt>Adds&nbsp;data&nbsp;to&nbsp;toppings&nbsp;table&nbsp;when&nbsp;creating&nbsp;new&nbsp;item<br>
+&nbsp;<br>
+Param:&nbsp;item_id</tt></dd></dl>
+ <dl><dt><a name="-add_user"><strong>add_user</strong></a>()</dt><dd><tt>POST&nbsp;Request<br>
+&nbsp;<br>
+Adds&nbsp;a&nbsp;new&nbsp;user<br>
+&nbsp;<br>
+Param:&nbsp;email<br>
+Param:&nbsp;name<br>
+Param:&nbsp;role<br>
+Param:&nbsp;password</tt></dd></dl>
+ <dl><dt><a name="-add_vessel"><strong>add_vessel</strong></a>(item_id)</dt><dd><tt>Adds&nbsp;data&nbsp;to&nbsp;vessel&nbsp;table&nbsp;when&nbsp;creating&nbsp;new&nbsp;item<br>
+&nbsp;<br>
+Param:&nbsp;item_id</tt></dd></dl>
+ <dl><dt><a name="-change_order_status"><strong>change_order_status</strong></a>()</dt><dd><tt>PUT&nbsp;Request<br>
+&nbsp;<br>
+Change&nbsp;Status&nbsp;on&nbsp;an&nbsp;order<br>
+&nbsp;<br>
+Param:&nbsp;status<br>
+Param:&nbsp;order_id</tt></dd></dl>
+ <dl><dt><a name="-create_item_order"><strong>create_item_order</strong></a>(itemName, orderId)</dt><dd><tt>Create&nbsp;Item&nbsp;order&nbsp;in&nbsp;table&nbsp;orderitem<br>
+&nbsp;<br>
+Param:&nbsp;itemName<br>
+Param:&nbsp;orderId</tt></dd></dl>
+ <dl><dt><a name="-create_order"><strong>create_order</strong></a>()</dt><dd><tt>Create&nbsp;order&nbsp;and&nbsp;calls&nbsp;create_item_order<br>
+PUT&nbsp;request&nbsp;-&gt;&nbsp;pushed&nbsp;order&nbsp;data&nbsp;to&nbsp;db<br>
+&nbsp;<br>
+@param&nbsp;orderItems&nbsp;A&nbsp;list&nbsp;of&nbsp;item&nbsp;names&nbsp;to&nbsp;be&nbsp;included&nbsp;in&nbsp;the&nbsp;order.<br>
+@param&nbsp;totalPrice&nbsp;The&nbsp;total&nbsp;price&nbsp;of&nbsp;the&nbsp;order.</tt></dd></dl>
+ <dl><dt><a name="-delete_icecream"><strong>delete_icecream</strong></a>(item_id)</dt><dd><tt>Deletes&nbsp;item&nbsp;from&nbsp;icecream&nbsp;table<br>
+&nbsp;<br>
+Param:&nbsp;item_id</tt></dd></dl>
+ <dl><dt><a name="-delete_item"><strong>delete_item</strong></a>()</dt><dd><tt>Delete&nbsp;item&nbsp;from&nbsp;stockoitem&nbsp;table<br>
+&nbsp;<br>
+Param:&nbsp;name<br>
+Param:&nbsp;item_type</tt></dd></dl>
+ <dl><dt><a name="-delete_menuitem"><strong>delete_menuitem</strong></a>(item_id)</dt><dd><tt>Deletes&nbsp;item&nbsp;from&nbsp;menuitems&nbsp;table<br>
+&nbsp;<br>
+Param:&nbsp;item_id</tt></dd></dl>
+ <dl><dt><a name="-delete_order"><strong>delete_order</strong></a>()</dt><dd><tt>DELETE&nbsp;request<br>
+&nbsp;<br>
+Delete&nbsp;an&nbsp;order<br>
+&nbsp;<br>
+Param:&nbsp;order_id</tt></dd></dl>
+ <dl><dt><a name="-delete_topping"><strong>delete_topping</strong></a>(item_id)</dt><dd><tt>Deletes&nbsp;item&nbsp;from&nbsp;toppings&nbsp;table<br>
+&nbsp;<br>
+Param:&nbsp;item_id</tt></dd></dl>
+ <dl><dt><a name="-delete_user"><strong>delete_user</strong></a>()</dt><dd><tt>DELETE&nbsp;Request<br>
+&nbsp;<br>
+Delets&nbsp;a&nbsp;user<br>
+&nbsp;<br>
+Param:&nbsp;email</tt></dd></dl>
+ <dl><dt><a name="-delete_vessel"><strong>delete_vessel</strong></a>(item_id)</dt><dd><tt>Deletes&nbsp;item&nbsp;from&nbsp;vessel&nbsp;table<br>
+&nbsp;<br>
+Param:&nbsp;item_id</tt></dd></dl>
+ <dl><dt><a name="-excess_report"><strong>excess_report</strong></a>()</dt><dd><tt>GET&nbsp;Request<br>
+Retrieves&nbsp;the&nbsp;excess&nbsp;report.<br>
+&nbsp;<br>
+This&nbsp;function&nbsp;will&nbsp;create&nbsp;a&nbsp;view&nbsp;that&nbsp;combines&nbsp;the&nbsp;item&nbsp;id&nbsp;and&nbsp;date&nbsp;of&nbsp;the<br>
+&nbsp;&nbsp;&nbsp;&nbsp;purchse&nbsp;of&nbsp;that&nbsp;item<br>
+&nbsp;&nbsp;&nbsp;&nbsp;and&nbsp;then&nbsp;will&nbsp;use&nbsp;a&nbsp;query&nbsp;that&nbsp;will&nbsp;count&nbsp;the&nbsp;number&nbsp;of&nbsp;times&nbsp;that&nbsp;items&nbsp;was<br>
+&nbsp;&nbsp;&nbsp;&nbsp;purchase&nbsp;starting&nbsp;at<br>
+&nbsp;&nbsp;&nbsp;&nbsp;the&nbsp;start&nbsp;date&nbsp;and&nbsp;going&nbsp;until&nbsp;the&nbsp;curr&nbsp;date,&nbsp;then&nbsp;will&nbsp;delete&nbsp;the&nbsp;view<br>
+&nbsp;<br>
+Param:&nbsp;startDate&nbsp;A&nbsp;String&nbsp;representing&nbsp;the&nbsp;start&nbsp;date&nbsp;in&nbsp;the&nbsp;format<br>
+&nbsp;&nbsp;&nbsp;&nbsp;"YYYY-MM-DD."</tt></dd></dl>
+ <dl><dt><a name="-get_all_icecream_data"><strong>get_all_icecream_data</strong></a>()</dt><dd><tt>Pulls&nbsp;data&nbsp;for&nbsp;all&nbsp;icecreams<br>
+GET&nbsp;request&nbsp;-&gt;&nbsp;returns&nbsp;1d&nbsp;array&nbsp;of&nbsp;dictionary,&nbsp;holding&nbsp;all&nbsp;data</tt></dd></dl>
+ <dl><dt><a name="-get_all_icecream_names"><strong>get_all_icecream_names</strong></a>()</dt><dd><tt>Pulls&nbsp;name&nbsp;data&nbsp;for&nbsp;all&nbsp;icecreams<br>
+GET&nbsp;request<br>
+returns&nbsp;1d&nbsp;array&nbsp;of&nbsp;all&nbsp;icecream&nbsp;names</tt></dd></dl>
+ <dl><dt><a name="-get_all_items"><strong>get_all_items</strong></a>()</dt><dd><tt>Pulls&nbsp;data&nbsp;for&nbsp;all&nbsp;items<br>
+GET&nbsp;request&nbsp;-&gt;&nbsp;returns&nbsp;2d&nbsp;array&nbsp;of&nbsp;all&nbsp;items</tt></dd></dl>
+ <dl><dt><a name="-get_all_topping_data"><strong>get_all_topping_data</strong></a>()</dt><dd><tt>Pulls&nbsp;data&nbsp;for&nbsp;all&nbsp;toppings<br>
+GET&nbsp;request&nbsp;-&gt;&nbsp;returns&nbsp;1d&nbsp;array&nbsp;of&nbsp;dictionary,&nbsp;holding&nbsp;all&nbsp;data</tt></dd></dl>
+ <dl><dt><a name="-get_all_vessel_data"><strong>get_all_vessel_data</strong></a>()</dt><dd><tt>Pulls&nbsp;data&nbsp;for&nbsp;all&nbsp;vessels<br>
+GET&nbsp;request&nbsp;-&gt;&nbsp;returns&nbsp;1d&nbsp;array&nbsp;of&nbsp;dictionary,&nbsp;holding&nbsp;all&nbsp;data</tt></dd></dl>
+ <dl><dt><a name="-get_data"><strong>get_data</strong></a>()</dt><dd><tt>Function&nbsp;for&nbsp;testing&nbsp;a&nbsp;PUT&nbsp;request&nbsp;from&nbsp;the&nbsp;front&nbsp;end<br>
+Will&nbsp;print&nbsp;all&nbsp;data&nbsp;that&nbsp;is&nbsp;in&nbsp;the&nbsp;request</tt></dd></dl>
+ <dl><dt><a name="-get_max_itemid"><strong>get_max_itemid</strong></a>()</dt><dd><tt>Pulls&nbsp;max&nbsp;value&nbsp;in&nbsp;stockitem&nbsp;<br>
+GET&nbsp;request&nbsp;-&gt;&nbsp;returns&nbsp;max&nbsp;value</tt></dd></dl>
+ <dl><dt><a name="-order_data"><strong>order_data</strong></a>()</dt><dd><tt>GET&nbsp;Request<br>
+&nbsp;<br>
+Returns&nbsp;order&nbsp;data&nbsp;based&nbsp;on&nbsp;a&nbsp;given&nbsp;order_id<br>
+&nbsp;<br>
+Param:&nbsp;order_id</tt></dd></dl>
+ <dl><dt><a name="-order_ids"><strong>order_ids</strong></a>()</dt><dd><tt>GET&nbsp;Reqest<br>
+&nbsp;<br>
+Returns&nbsp;all&nbsp;order_ids</tt></dd></dl>
+ <dl><dt><a name="-restock_report"><strong>restock_report</strong></a>()</dt><dd><tt>GET&nbsp;Request<br>
+&nbsp;<br>
+This&nbsp;function&nbsp;retrieves&nbsp;information&nbsp;for&nbsp;the&nbsp;restock&nbsp;report&nbsp;from&nbsp;the&nbsp;database.<br>
+&nbsp;<br>
+It&nbsp;queries&nbsp;for&nbsp;items&nbsp;which&nbsp;have&nbsp;a&nbsp;quantity&nbsp;below&nbsp;the<br>
+&nbsp;&nbsp;&nbsp;&nbsp;minimum&nbsp;allowed&nbsp;quantity&nbsp;and&nbsp;returns&nbsp;a&nbsp;ResultSet&nbsp;containing&nbsp;them.&nbsp;This<br>
+&nbsp;&nbsp;&nbsp;&nbsp;function&nbsp;is&nbsp;used&nbsp;to&nbsp;provide&nbsp;information&nbsp;to&nbsp;create&nbsp;the&nbsp;restock<br>
+&nbsp;&nbsp;&nbsp;&nbsp;table&nbsp;on&nbsp;the&nbsp;Manager&nbsp;POS.</tt></dd></dl>
+ <dl><dt><a name="-sales_report"><strong>sales_report</strong></a>()</dt><dd><tt>GET&nbsp;function<br>
+&nbsp;<br>
+Retrieves&nbsp;a&nbsp;sales&nbsp;report&nbsp;for&nbsp;a&nbsp;specified&nbsp;date&nbsp;range.<br>
+&nbsp;<br>
+This&nbsp;method&nbsp;queries&nbsp;the&nbsp;database&nbsp;to&nbsp;retrieve&nbsp;sales&nbsp;data&nbsp;for&nbsp;items&nbsp;within&nbsp;the<br>
+&nbsp;&nbsp;&nbsp;&nbsp;specified&nbsp;date&nbsp;range.<br>
+&nbsp;<br>
+The&nbsp;sales&nbsp;report&nbsp;includes&nbsp;item&nbsp;names,&nbsp;total&nbsp;quantities&nbsp;sold,&nbsp;and&nbsp;total&nbsp;sales<br>
+&nbsp;&nbsp;&nbsp;&nbsp;amounts,&nbsp;sorted&nbsp;by&nbsp;total&nbsp;sales&nbsp;amount&nbsp;in&nbsp;descending&nbsp;order.<br>
+&nbsp;<br>
+Param:&nbsp;startDate&nbsp;A&nbsp;String&nbsp;representing&nbsp;the&nbsp;start&nbsp;date&nbsp;in&nbsp;the&nbsp;format<br>
+&nbsp;&nbsp;&nbsp;&nbsp;"YYYY-MM-DD."<br>
+Param:&nbsp;endDate&nbsp;&nbsp;&nbsp;A&nbsp;String&nbsp;representing&nbsp;the&nbsp;end&nbsp;date&nbsp;in&nbsp;the&nbsp;format<br>
+&nbsp;&nbsp;&nbsp;&nbsp;"YYYY-MM-DD."</tt></dd></dl>
+ <dl><dt><a name="-update_item"><strong>update_item</strong></a>()</dt><dd><tt>Update&nbsp;item&nbsp;<br>
+PUT&nbsp;request&nbsp;-&gt;&nbsp;update&nbsp;value&nbsp;in&nbsp;database&nbsp;for&nbsp;an&nbsp;item<br>
+&nbsp;<br>
+Param:&nbsp;item_id<br>
+Param:&nbsp;field<br>
+Param:&nbsp;value</tt></dd></dl>
+ <dl><dt><a name="-update_user"><strong>update_user</strong></a>()</dt><dd><tt>PUT&nbsp;Request<br>
+&nbsp;<br>
+Updates&nbsp;a&nbsp;user&nbsp;with&nbsp;specific&nbsp;values&nbsp;<br>
+&nbsp;<br>
+Param:&nbsp;id<br>
+Param:&nbsp;field<br>
+Param:&nbsp;value</tt></dd></dl>
+ <dl><dt><a name="-usage_report"><strong>usage_report</strong></a>()</dt><dd><tt>PUT&nbsp;Request<br>
+Retrieves&nbsp;the&nbsp;usage&nbsp;report.<br>
+&nbsp;<br>
+This&nbsp;function&nbsp;will&nbsp;create&nbsp;a&nbsp;view&nbsp;that&nbsp;combines&nbsp;the&nbsp;item&nbsp;id&nbsp;and&nbsp;date&nbsp;of&nbsp;the<br>
+&nbsp;&nbsp;&nbsp;&nbsp;purchse&nbsp;of&nbsp;that&nbsp;item<br>
+&nbsp;&nbsp;&nbsp;&nbsp;and&nbsp;then&nbsp;will&nbsp;use&nbsp;a&nbsp;query&nbsp;that&nbsp;will&nbsp;count&nbsp;the&nbsp;number&nbsp;of&nbsp;times&nbsp;that&nbsp;items&nbsp;was<br>
+&nbsp;&nbsp;&nbsp;&nbsp;purchase&nbsp;starting&nbsp;at<br>
+&nbsp;&nbsp;&nbsp;&nbsp;the&nbsp;start&nbsp;date&nbsp;and&nbsp;going&nbsp;until&nbsp;the&nbsp;curr&nbsp;date,&nbsp;then&nbsp;will&nbsp;delete&nbsp;the&nbsp;view<br>
+&nbsp;<br>
+Param:&nbsp;startDate&nbsp;A&nbsp;String&nbsp;representing&nbsp;the&nbsp;start&nbsp;date&nbsp;in&nbsp;the&nbsp;format<br>
+&nbsp;&nbsp;&nbsp;&nbsp;"YYYY-MM-DD."<br>
+Param:&nbsp;endDate&nbsp;A&nbsp;String&nbsp;representing&nbsp;the&nbsp;end&nbsp;date&nbsp;in&nbsp;the&nbsp;format<br>
+&nbsp;&nbsp;&nbsp;&nbsp;"YYYY-MM-DD."<br>
+&nbsp;<br>
+example:&nbsp;<a href="http://127.0.0.1:5000/usage_report?startdate=2023-08-01&amp;enddate=2023-10-01">http://127.0.0.1:5000/usage_report?startdate=2023-08-01&amp;enddate=2023-10-01</a></tt></dd></dl>
+ <dl><dt><a name="-user_data"><strong>user_data</strong></a>()</dt><dd><tt>GET&nbsp;Request&nbsp;<br>
+&nbsp;<br>
+Gets&nbsp;all&nbsp;users&nbsp;and&nbsp;their&nbsp;information</tt></dd></dl>
+ <dl><dt><a name="-user_role"><strong>user_role</strong></a>()</dt><dd><tt>GET&nbsp;Request<br>
+&nbsp;<br>
+Gets&nbsp;a&nbsp;users&nbsp;role<br>
+&nbsp;<br>
+Param:&nbsp;id</tt></dd></dl>
+ <dl><dt><a name="-what_sells_report"><strong>what_sells_report</strong></a>()</dt><dd><tt>GET&nbsp;request<br>
+&nbsp;<br>
+Retrieves&nbsp;the&nbsp;report&nbsp;for&nbsp;what&nbsp;sells&nbsp;together&nbsp;option<br>
+&nbsp;<br>
+This&nbsp;function&nbsp;will&nbsp;use&nbsp;a&nbsp;query&nbsp;that&nbsp;will&nbsp;count&nbsp;the&nbsp;pair&nbsp;combinations<br>
+&nbsp;&nbsp;&nbsp;&nbsp;of&nbsp;certain&nbsp;items&nbsp;thoughout&nbsp;the&nbsp;orderitems&nbsp;in&nbsp;between&nbsp;a&nbsp;start&nbsp;and&nbsp;end&nbsp;date<br>
+&nbsp;<br>
+Param:&nbsp;startDate&nbsp;A&nbsp;String&nbsp;representing&nbsp;the&nbsp;start&nbsp;date&nbsp;in&nbsp;the&nbsp;format<br>
+&nbsp;&nbsp;&nbsp;&nbsp;"YYYY-MM-DD."<br>
+Param:&nbsp;endDate&nbsp;&nbsp;&nbsp;A&nbsp;String&nbsp;representing&nbsp;the&nbsp;end&nbsp;date&nbsp;in&nbsp;the&nbsp;format<br>
+&nbsp;&nbsp;&nbsp;&nbsp;"YYYY-MM-DD."</tt></dd></dl>
+</td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#55aa55">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Data</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#55aa55"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><strong>DB_conn</strong> = &lt;backend.Connection object&gt;<br>
+<strong>app</strong> = &lt;Flask 'server'&gt;<br>
+<strong>default_app</strong> = &lt;firebase_admin.App object&gt;<br>
+<strong>request</strong> = &lt;LocalProxy unbound&gt;</td></tr></table>
+</body></html>
